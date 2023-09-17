@@ -36,6 +36,9 @@ jobs:
       - name: Check code style with Spotless
         run: ./gradlew spotlessCheck
 
+      - name: Check code style with Detekt
+        run: ./gradlew detektAll
+
   android:
     needs: [code-style]
     runs-on: ubuntu-latest
