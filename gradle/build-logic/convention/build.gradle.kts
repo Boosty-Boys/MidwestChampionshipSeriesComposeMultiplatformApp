@@ -22,7 +22,9 @@ spotless {
 }
 
 dependencies {
+    compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
 }
 
 gradlePlugin {

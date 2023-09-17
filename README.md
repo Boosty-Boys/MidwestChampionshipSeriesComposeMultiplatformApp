@@ -303,9 +303,8 @@ We encourage you to explore Compose Multiplatform further and try out more proje
 * [Explore some more advanced Compose Multiplatform example projects](https://github.com/JetBrains/compose-multiplatform/blob/master/examples/README.md)
 
 ## TODO joer
-1. Detekt
 1. consolidate versions to toml
 1. default visibility required
-1. CI - github actions
-   1. spotless
-   1. build
+1. Desktop target
+1. CI
+   1. setup ios / desktop CI

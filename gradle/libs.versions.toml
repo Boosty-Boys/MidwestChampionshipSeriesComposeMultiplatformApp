@@ -1,7 +1,10 @@
 [versions]
-spotless = "6.19.0"
+spotless = "6.21.0"
 detekt = "1.23.1"
 ktlint = "0.49.1"
+agp = "8.1.1"
+kotlin = "1.8.20"
+detektGradlePlugin = "1.23.1"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -9,3 +12,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 [libraries]
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 detekt-gradlePlugins = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
