@@ -33,21 +33,5 @@ fun WelcomeScreen(route: (Route) -> Unit) {
         Button(onClick = { route(Route.ViewModel) }) {
             Text(text = "moko-mvvm")
         }
-
-        Button(onClick = { route(Route.Permissions) }) {
-            Text(text = "moko-permissions")
-        }
-
-        Button(onClick = { route(Route.Media) }) {
-            Text(text = "moko-media")
-        }
-
-        Button(onClick = { route(Route.Biometry) }) {
-            Text(text = "moko-biometry")
-        }
-
-        Button(onClick = { route(Route.Geo) }) {
-            Text(text = "moko-geo")
-        }
     }
 }
