@@ -10,6 +10,8 @@ plugins {
 kotlin {
     android()
 
+    jvm("desktop")
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -31,10 +33,6 @@ kotlin {
     sourceSets {
         val mokoResourcesVersion = extra["moko.resources.version"] as String
         val mokoMvvmVersion = extra["moko.mvvm.version"] as String
-        val mokoPermissionsVersion = extra["moko.permissions.version"] as String
-        val mokoMediaVersion = extra["moko.media.version"] as String
-        val mokoBiometryVersion = extra["moko.biometry.version"] as String
-        val mokoGeoVersion = extra["moko.geo.version"] as String
 
         val commonMain by getting {
             dependencies {
@@ -47,14 +45,6 @@ kotlin {
                 implementation("dev.icerock.moko:resources-compose:$mokoResourcesVersion")
 
                 implementation("dev.icerock.moko:mvvm-compose:$mokoMvvmVersion")
-
-                implementation("dev.icerock.moko:permissions-compose:$mokoPermissionsVersion")
-
-                implementation("dev.icerock.moko:media-compose:$mokoMediaVersion")
-
-                implementation("dev.icerock.moko:biometry-compose:$mokoBiometryVersion")
-
-                implementation("dev.icerock.moko:geo-compose:$mokoGeoVersion")
 
                 // fix of Could not find "shared/build/kotlinTransformedMetadataLibraries/commonMain/org.jetbrains.kotlinx-atomicfu-0.17.3-nativeInterop-8G5yng.klib"
                 implementation("org.jetbrains.kotlinx:atomicfu:0.17.3")
@@ -75,6 +65,11 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+        }
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.common)
+            }
         }
     }
 }

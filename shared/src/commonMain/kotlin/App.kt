@@ -22,22 +22,6 @@ fun App() {
             Route.ViewModel -> ViewModelScreen(
                 backAction = { currentScreen = Route.Welcome },
             )
-
-            Route.Permissions -> PermissionsScreen(
-                backAction = { currentScreen = Route.Welcome },
-            )
-
-            Route.Media -> MediaScreen(
-                backAction = { currentScreen = Route.Welcome },
-            )
-
-            Route.Biometry -> BiometryScreen(
-                backAction = { currentScreen = Route.Welcome },
-            )
-
-            Route.Geo -> GeoScreen(
-                backAction = { currentScreen = Route.Welcome },
-            )
         }
     }
 }

@@ -43,3 +43,22 @@ tasks {
         exclude("**/resources/**", "**/build/**")
     }
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    compilerOptions {
+        allWarningsAsErrors.set(true)
+
+        if (project.hasProperty("enableComposeCompilerReports")) {
+            freeCompilerArgs.addAll(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                    project.buildDir.absolutePath + "/compose_metrics",
+            )
+            freeCompilerArgs.addAll(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                    project.buildDir.absolutePath + "/compose_metrics",
+            )
+        }
+    }
+}

@@ -2,6 +2,7 @@ rootProject.name = "Midwest Championship Series"
 
 include(":androidApp")
 include(":shared")
+include(":desktopApp")
 
 pluginManagement {
     includeBuild("gradle/build-logic")
