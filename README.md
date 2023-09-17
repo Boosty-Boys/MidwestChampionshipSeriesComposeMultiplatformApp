@@ -309,3 +309,4 @@ We encourage you to explore Compose Multiplatform further and try out more proje
 1. CI - github actions
    1. spotless
    1. build
+1. Desktop app
