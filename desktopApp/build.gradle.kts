@@ -21,11 +21,11 @@ kotlin {
 }
 compose.desktop {
     application {
-        mainClass = "app.mcs.MainKt"
+        mainClass = "com.boostyboys.mcs.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "app.mcs"
+            packageName = "com.boostyboys.mcs"
             packageVersion = "1.0.0"
         }
     }

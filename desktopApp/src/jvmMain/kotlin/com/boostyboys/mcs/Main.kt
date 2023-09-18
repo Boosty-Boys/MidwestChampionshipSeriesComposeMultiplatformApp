@@ -1,5 +1,4 @@
-
-package app.mcs
+package com.boostyboys.mcs
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application

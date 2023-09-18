@@ -1,4 +1,4 @@
-package com.mcs
+package com.boostyboys.mcs
 
 import MainView
 import android.os.Bundle
