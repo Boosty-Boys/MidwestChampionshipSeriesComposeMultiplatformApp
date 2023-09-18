@@ -21,6 +21,7 @@ git add "$GIT_STASH_FILE"
 git stash -k
 
 # apply spotless
+./gradlew detektAll --daemon
 ./gradlew spotlessApply --daemon
 ./gradlew :build-logic:convention:spotlessApply --daemon
 
