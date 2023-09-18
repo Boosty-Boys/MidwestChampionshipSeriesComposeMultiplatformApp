@@ -14,7 +14,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SampleAppToDelete : Screen {
+class SampleAppToDelete(val tabTitle: String) : Screen {
 
     @Composable
     override fun Content() {
@@ -26,7 +26,8 @@ class SampleAppToDelete : Screen {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(count.value.toString())
+            Text("Hello screen $tabTitle")
+
             Button(
                 onClick = {
                     screenModel.increment()
@@ -34,6 +35,8 @@ class SampleAppToDelete : Screen {
             ) {
                 Text("Click to increment")
             }
+
+            Text(count.value.toString())
 
             val navigator = LocalNavigator.currentOrThrow
 

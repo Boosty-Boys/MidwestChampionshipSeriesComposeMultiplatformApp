@@ -5,5 +5,7 @@ import app.com.mcs.di.initKoin
 @Suppress("Unused")
 fun MainViewController(): platform.UIKit.UIViewController {
     initKoin()
-    return ComposeUIViewController { Main() }
+    return ComposeUIViewController {
+        Main()
+    }
 }

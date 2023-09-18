@@ -7,5 +7,6 @@
 1. default visibility required
 1. CI
    1. setup ios CI
-1. navigation - https://github.com/adrielcafe/voyager
-1. di - https://github.com/evant/kotlin-inject or https://github.com/InsertKoinIO/koin
+1. theming
+   2. ios / android / desktop
+1. bottom nav configuration style - https://jassielcastro.medium.com/customizing-bottomnavigation-items-73680b71857d

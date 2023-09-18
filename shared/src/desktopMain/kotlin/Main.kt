@@ -1,4 +1,4 @@
 import androidx.compose.runtime.Composable
-import app.com.mcs.ui.SampleAppToDelete
+import app.com.mcs.Main
 
-@Composable fun MainView() = SampleAppToDelete().Content()
+@Composable fun MainView() = Main()
