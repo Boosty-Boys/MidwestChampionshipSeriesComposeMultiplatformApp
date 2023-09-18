@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
-    id("app.mcs.root")
-    id("app.mcs.precommit")
+    id("com.boostyboys.mcs.root")
+    id("com.boostyboys.mcs.precommit")
 }
 
 kotlin {

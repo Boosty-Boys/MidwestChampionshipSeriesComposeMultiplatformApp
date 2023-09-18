@@ -30,13 +30,13 @@ dependencies {
 gradlePlugin {
     plugins {
         register("root") {
-            id = "app.mcs.root"
-            implementationClass = "app.mcs.gradle.RootConventionPlugin"
+            id = "com.boostyboys.mcs.root"
+            implementationClass = "com.boostyboys.mcs.gradle.RootConventionPlugin"
         }
 
         register("precommit") {
-            id = "app.mcs.precommit"
-            implementationClass = "app.mcs.gradle.PreCommitPlugin"
+            id = "com.boostyboys.mcs.precommit"
+            implementationClass = "com.boostyboys.mcs.gradle.PreCommitPlugin"
         }
     }
 }

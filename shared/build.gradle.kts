@@ -6,7 +6,7 @@ plugins {
     // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
     // also re-add back the script in project.pbxproj from the commit this was added
     // id("dev.icerock.mobile.multiplatform-resources")
-    id("app.mcs.root")
+    id("com.boostyboys.mcs.root")
 }
 
 kotlin {

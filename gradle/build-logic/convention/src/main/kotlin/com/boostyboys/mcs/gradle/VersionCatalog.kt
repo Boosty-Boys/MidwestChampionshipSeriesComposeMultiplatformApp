@@ -1,4 +1,4 @@
-package app.mcs.gradle
+package com.boostyboys.mcs.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog

@@ -1,4 +1,4 @@
-package app.mcs.gradle
+package com.boostyboys.mcs.gradle
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
