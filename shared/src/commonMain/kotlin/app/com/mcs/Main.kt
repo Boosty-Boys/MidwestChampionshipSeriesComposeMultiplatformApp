@@ -21,7 +21,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
 
 @Composable fun Main() {
-    TabNavigator(TeamTab) {
+    TabNavigator(ScheduleTab) {
         Scaffold(
             content = {
                 Box(modifier = Modifier.padding(it)) {
@@ -30,8 +30,8 @@ import cafe.adriel.voyager.transitions.SlideTransition
             },
             bottomBar = {
                 BottomNavigation {
-                    TabNavigationItem(TeamTab)
                     TabNavigationItem(ScheduleTab)
+                    TabNavigationItem(TeamTab)
                 }
             },
         )

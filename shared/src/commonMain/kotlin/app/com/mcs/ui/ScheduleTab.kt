@@ -19,7 +19,7 @@ object ScheduleTab : Tab {
 
             return remember {
                 TabOptions(
-                    index = 1u,
+                    index = 0u,
                     title = title,
                     icon = icon,
                 )
