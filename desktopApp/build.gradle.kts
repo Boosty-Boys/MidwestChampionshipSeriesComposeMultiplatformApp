@@ -12,6 +12,9 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":shared"))
+
+                implementation(libs.koin)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
             }
         }
     }

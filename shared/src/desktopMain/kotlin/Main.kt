@@ -1,5 +1,4 @@
 import androidx.compose.runtime.Composable
+import app.com.mcs.ui.SampleAppToDelete
 
-actual fun getPlatformName(): String = "Desktop"
-
-@Composable fun MainView() = App()
+@Composable fun MainView() = SampleAppToDelete().Content()

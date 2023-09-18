@@ -5,7 +5,8 @@ plugins {
     id("com.android.application").apply(false)
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
-    id("dev.icerock.mobile.multiplatform-resources").apply(false)
+    // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+    // id("dev.icerock.mobile.multiplatform-resources").apply(false)
     alias(libs.plugins.spotless) apply false
     id("io.gitlab.arturbosch.detekt").version(libs.versions.detektGradlePlugin)
 }
@@ -16,7 +17,7 @@ subprojects {
 
 tasks {
     /**
-     * The detektAll tasks enables parallel usage for detekt so if this project
+     * The \detektAll tasks enables parallel usage for detekt so if this project
      * expands to multi module support, detekt can continue to run quickly.
      *
      * https://proandroiddev.com/how-to-use-detekt-in-a-multi-module-android-project-6781937fbef2
