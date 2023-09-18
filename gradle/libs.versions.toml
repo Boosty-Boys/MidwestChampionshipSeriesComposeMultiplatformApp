@@ -5,6 +5,8 @@ ktlint = "0.49.1"
 agp = "8.1.1"
 kotlin = "1.8.20"
 detektGradlePlugin = "1.23.1"
+voyager = "1.0.0-rc07"
+koin = "3.5.0"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -15,3 +17,9 @@ detekt-gradlePlugins = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
+
+voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
+voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+
+koin = { module = "io.insert-koin:koin-core", version.ref = "koin"}

@@ -3,12 +3,14 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("dev.icerock.mobile.multiplatform-resources")
+    // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+    // also re-add back the script in project.pbxproj from the commit this was added
+    // id("dev.icerock.mobile.multiplatform-resources")
     id("app.mcs.root")
 }
 
 kotlin {
-    android()
+    androidTarget()
 
     jvm("desktop")
 
@@ -26,13 +28,14 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+        // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+        // extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
         extraSpecAttributes["exclude_files"] = "['src/commonMain/resources/MR/**']"
     }
 
     sourceSets {
-        val mokoResourcesVersion = extra["moko.resources.version"] as String
-        val mokoMvvmVersion = extra["moko.mvvm.version"] as String
+        // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+        // val mokoResourcesVersion = extra["moko.resources.version"] as String
 
         val commonMain by getting {
             dependencies {
@@ -42,12 +45,16 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
-                implementation("dev.icerock.moko:resources-compose:$mokoResourcesVersion")
-
-                implementation("dev.icerock.moko:mvvm-compose:$mokoMvvmVersion")
+                // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+                // implementation("dev.icerock.moko:resources-compose:$mokoResourcesVersion")
 
                 // fix of Could not find "shared/build/kotlinTransformedMetadataLibraries/commonMain/org.jetbrains.kotlinx-atomicfu-0.17.3-nativeInterop-8G5yng.klib"
                 implementation("org.jetbrains.kotlinx:atomicfu:0.17.3")
+
+                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.transitions)
+                implementation(libs.voyager.koin)
+                implementation(libs.koin)
             }
         }
         val androidMain by getting {
@@ -74,9 +81,10 @@ kotlin {
     }
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "com.mcs.common"
-}
+// re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+// multiplatformResources {
+//    multiplatformResourcesPackage = "com.mcs.common"
+// }
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
@@ -92,10 +100,10 @@ android {
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlin {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
 }

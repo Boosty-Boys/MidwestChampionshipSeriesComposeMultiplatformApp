@@ -2,12 +2,8 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>FunctionNaming:Main.kt$fun MainViewController()</ID>
-    <ID>MagicNumber:build.gradle.kts$11</ID>
+    <ID>FunctionNaming:Main.kt$@Suppress("Unused") fun MainViewController(): platform.UIKit.UIViewController</ID>
+    <ID>MagicNumber:build.gradle.kts$17</ID>
     <ID>MaxLineLength:build.gradle.kts$// fix of Could not find "shared/build/kotlinTransformedMetadataLibraries/commonMain/org.jetbrains.kotlinx-atomicfu-0.17.3-nativeInterop-8G5yng.klib"</ID>
-    <ID>NewLineAtEndOfFile:build.gradle.kts$.build.gradle.kts</ID>
-    <ID>TooGenericExceptionCaught:BiometryScreen.kt$BiometryViewModel$exc: Exception</ID>
-    <ID>TooGenericExceptionCaught:GeoScreen.kt$GeoViewModel$exc: Exception</ID>
-    <ID>TooGenericExceptionCaught:MediaScreen.kt$MediaViewModel$exc: Exception</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -28,7 +28,8 @@ pluginManagement {
 
         id("org.jetbrains.compose").version(composeVersion)
 
-        id("dev.icerock.mobile.multiplatform-resources").version(mokoResourcesVersion)
+        // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
+        // id("dev.icerock.mobile.multiplatform-resources").version(mokoResourcesVersion)
     }
 }
 
