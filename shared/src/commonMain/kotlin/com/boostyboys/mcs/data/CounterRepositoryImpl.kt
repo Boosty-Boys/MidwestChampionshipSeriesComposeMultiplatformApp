@@ -1,4 +1,4 @@
-package app.com.mcs.data
+package com.boostyboys.mcs.data
 
 class CounterRepositoryImpl : CounterRepository {
     private var counter = Counter(value = 0)

@@ -1,4 +1,4 @@
-package app.com.mcs
+package com.boostyboys.mcs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,14 +11,14 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.com.mcs.ui.SampleAppToDelete
-import app.com.mcs.ui.ScheduleTab
-import app.com.mcs.ui.TeamTab
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import com.boostyboys.mcs.ui.SampleAppToDelete
+import com.boostyboys.mcs.ui.ScheduleTab
+import com.boostyboys.mcs.ui.TeamTab
 
 @Composable fun Main() {
     TabNavigator(ScheduleTab) {

@@ -2,8 +2,7 @@ package com.boostyboys.mcs
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import app.com.mcs.Main
-import app.com.mcs.di.initKoin
+import com.boostyboys.mcs.di.initKoin
 import java.awt.Dimension
 
 private const val WINDOW_MIN_WIDTH = 700

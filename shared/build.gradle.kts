@@ -84,12 +84,12 @@ kotlin {
 
 // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
 // multiplatformResources {
-//    multiplatformResourcesPackage = "com.mcs.common"
+//    multiplatformResourcesPackage = "com.boostyboys.mcs.common"
 // }
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.mcs.common"
+    namespace = "com.boostyboys.mcs.common"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")

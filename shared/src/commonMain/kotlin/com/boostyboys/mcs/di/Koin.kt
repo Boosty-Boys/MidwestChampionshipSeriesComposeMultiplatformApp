@@ -1,8 +1,8 @@
-package app.com.mcs.di
+package com.boostyboys.mcs.di
 
-import app.com.mcs.data.CounterRepository
-import app.com.mcs.data.CounterRepositoryImpl
-import app.com.mcs.ui.SampleAppScreenModel
+import com.boostyboys.mcs.data.CounterRepository
+import com.boostyboys.mcs.data.CounterRepositoryImpl
+import com.boostyboys.mcs.ui.SampleAppScreenModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module

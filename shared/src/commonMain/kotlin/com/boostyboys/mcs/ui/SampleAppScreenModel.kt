@@ -1,9 +1,9 @@
-package app.com.mcs.ui
+package com.boostyboys.mcs.ui
 
-import app.com.mcs.data.Counter
-import app.com.mcs.data.CounterRepository
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.boostyboys.mcs.data.Counter
+import com.boostyboys.mcs.data.CounterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

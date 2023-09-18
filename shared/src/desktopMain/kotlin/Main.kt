@@ -1,4 +1,4 @@
 import androidx.compose.runtime.Composable
-import app.com.mcs.Main
+import com.boostyboys.mcs.Main
 
 @Composable fun MainView() = Main()

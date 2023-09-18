@@ -1,4 +1,4 @@
-package app.com.mcs.ui
+package com.boostyboys.mcs.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

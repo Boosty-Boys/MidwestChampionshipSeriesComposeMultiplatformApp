@@ -20,7 +20,7 @@ kotlin {
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.mcs"
+    namespace = "com.boostyboys.mcs"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 

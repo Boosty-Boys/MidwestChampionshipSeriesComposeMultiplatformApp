@@ -1,4 +1,4 @@
-package app.com.mcs.data
+package com.boostyboys.mcs.data
 
 interface CounterRepository {
     fun getCounter(): Counter
