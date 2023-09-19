@@ -13,8 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.boostyboys.mcs.data.models.Team
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 
 data class MatchDetailsScreen(
-    val homeTeam: String,
-    val awayTeam: String,
+    val homeTeam: Team,
+    val awayTeam: Team,
 ) : Screen {
 
     @Composable
@@ -74,10 +73,9 @@ data class MatchDetailsScreen(
 
     @Composable
     private fun TeamDisplay(
-        teamName: String,
+        team: Team,
     ) {
-        // todo use team's logo
-        val logo = rememberVectorPainter(Icons.Default.AccountCircle)
+        val logo = rememberVectorPainter(team.logo)
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -91,7 +89,7 @@ data class MatchDetailsScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = teamName)
+            Text(text = team.name)
         }
     }
 }

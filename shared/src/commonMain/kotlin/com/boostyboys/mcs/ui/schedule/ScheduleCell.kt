@@ -14,21 +14,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.boostyboys.mcs.data.models.Team
 
 @Composable
 fun ScheduleCell(
     modifier: Modifier = Modifier,
-    homeTeam: String,
-    awayTeam: String,
-    onClick: (Pair<String, String>) -> Unit,
+    homeTeam: Team,
+    awayTeam: Team,
+    onClick: (Pair<Team, Team>) -> Unit,
 ) {
     Surface(
         modifier = modifier
@@ -56,10 +55,9 @@ fun ScheduleCell(
 
 @Composable
 private fun TeamRow(
-    teamName: String,
+    team: Team,
 ) {
-    // todo use team's logo
-    val logo = rememberVectorPainter(Icons.Default.AccountCircle)
+    val logo = rememberVectorPainter(team.logo)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -73,6 +71,6 @@ private fun TeamRow(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Text(text = teamName)
+        Text(text = team.name)
     }
 }

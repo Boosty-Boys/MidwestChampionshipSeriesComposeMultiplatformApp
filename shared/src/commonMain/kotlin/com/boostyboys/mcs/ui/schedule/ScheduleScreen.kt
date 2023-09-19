@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.boostyboys.mcs.data.models.Team
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
 
@@ -64,21 +65,18 @@ class ScheduleScreen : Screen {
         }
     }
 
-    private val matches: List<Pair<String, String>> = listOf(
-        Pair("Rochester Rhythm", "Hibbing Rangers"),
-        Pair("Mankato Atlas", "Bloomington Maulers"),
-        Pair("Duluth Superiors", "Brainerd Victory"),
-        Pair("Rochester Rhythm", "Hibbing Rangers"),
-        Pair("Mankato Atlas", "Bloomington Maulers"),
-        Pair("Duluth Superiors", "Brainerd Victory"),
-        Pair("Rochester Rhythm", "Hibbing Rangers"),
-        Pair("Mankato Atlas", "Bloomington Maulers"),
-        Pair("Duluth Superiors", "Brainerd Victory"),
-        Pair("Rochester Rhythm", "Hibbing Rangers"),
-        Pair("Mankato Atlas", "Bloomington Maulers"),
-        Pair("Duluth Superiors", "Brainerd Victory"),
-        Pair("Rochester Rhythm", "Hibbing Rangers"),
-        Pair("Mankato Atlas", "Bloomington Maulers"),
-        Pair("Duluth Superiors", "Brainerd Victory"),
+    private val matches: List<Pair<Team, Team>> = listOf(
+        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
+        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
+        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
+        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
+        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
+        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
+        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
+        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
+        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
+        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
+        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
+        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
     )
 }
