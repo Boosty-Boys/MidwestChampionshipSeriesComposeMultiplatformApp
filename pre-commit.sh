@@ -20,9 +20,9 @@ git add "$GIT_STASH_FILE"
 # stash untracked files
 git stash -k
 
-# apply spotless
-./gradlew detektAll --daemon
+# apply spotless and check formatting
 ./gradlew spotlessApply --daemon
+./gradlew detektAll --daemon
 ./gradlew :build-logic:convention:spotlessApply --daemon
 
 # re-add any changes that spotless created

@@ -19,7 +19,7 @@ class TeamsScreen : Screen {
             },
             onDisposed = {
                 // todo?
-            }
+            },
         )
 
         Box(

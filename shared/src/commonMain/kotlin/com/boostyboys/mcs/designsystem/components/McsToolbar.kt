@@ -25,7 +25,8 @@ fun McsToolbar(
     title: String,
     subtitle: String? = null,
     onBackClicked: (() -> Unit)? = null,
-    actionIcon: @Composable (() -> Unit)? = null // assumed to be 64.dp, TODO figure out how to enforce, or if we want multiple action buttons or something instead
+    // assumed to be 64.dp, TODO figure out how to enforce, or if we want multiple action buttons
+    actionIcon: @Composable (() -> Unit)? = null,
 ) {
     TopAppBar(
         modifier = modifier
@@ -72,6 +73,6 @@ fun McsToolbar(
             } else {
                 Spacer(modifier = Modifier.size(64.dp))
             }
-        }
+        },
     )
 }

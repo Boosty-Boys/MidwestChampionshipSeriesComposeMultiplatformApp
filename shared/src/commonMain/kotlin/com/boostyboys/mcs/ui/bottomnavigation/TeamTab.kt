@@ -9,7 +9,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
-import com.boostyboys.mcs.ui.schedule.ScheduleScreen
 import com.boostyboys.mcs.ui.teams.TeamsScreen
 
 object TeamTab : Tab {

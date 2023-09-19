@@ -55,7 +55,7 @@ class ScheduleScreen : Screen {
                                     navigator.push(
                                         MatchDetailsScreen(homeTeam, awayTeam),
                                     )
-                                }
+                                },
                             )
                         }
                     }
