@@ -21,7 +21,7 @@ kotlin {
 }
 compose.desktop {
     application {
-        mainClass = "com.boostyboys.mcs.MainKt"
+        mainClass = "com.boostyboys.mcs.desktop.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

@@ -1,7 +1,8 @@
-package com.boostyboys.mcs
+package com.boostyboys.mcs.desktop
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.boostyboys.mcs.Main
 import com.boostyboys.mcs.di.initKoin
 import java.awt.Dimension
 
