@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
-    id("app.mcs.root")
-    id("app.mcs.precommit")
+    id("com.boostyboys.mcs.root")
+    id("com.boostyboys.mcs.precommit")
 }
 
 kotlin {
@@ -20,12 +20,12 @@ kotlin {
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.mcs"
+    namespace = "com.boostyboys.mcs"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
     defaultConfig {
-        applicationId = "com.mcs.MyApplication"
+        applicationId = "com.boostyboys.mcs"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
         versionCode = 1

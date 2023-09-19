@@ -1,5 +1,5 @@
 plugins {
-    id("app.mcs.root")
+    id("com.boostyboys.mcs.root")
 
     kotlin("multiplatform").apply(false)
     id("com.android.application").apply(false)
