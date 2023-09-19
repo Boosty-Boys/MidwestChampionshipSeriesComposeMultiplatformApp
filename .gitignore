@@ -77,3 +77,4 @@ iosApp/Podfile.lock
 
 .DS_STORE
 *.xcuserstate
+iosApp/iosApp.xcodeproj/project.pbxproj
