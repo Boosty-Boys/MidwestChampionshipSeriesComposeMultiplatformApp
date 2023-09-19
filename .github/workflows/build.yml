@@ -135,7 +135,7 @@ jobs:
           name: desktop-test-results
           path: |
             **/build/test-results/*
-  ios-:
+  ios:
     needs: [code-style]
     runs-on: macos-latest
     timeout-minutes: 60
