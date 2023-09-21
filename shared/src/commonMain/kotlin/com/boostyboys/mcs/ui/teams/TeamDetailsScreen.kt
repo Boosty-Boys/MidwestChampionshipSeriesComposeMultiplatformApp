@@ -1,11 +1,8 @@
-package com.boostyboys.mcs.ui.match
+package com.boostyboys.mcs.ui.teams
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -18,13 +15,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.models.Match
+import com.boostyboys.mcs.data.models.Team
 import com.boostyboys.mcs.designsystem.components.McsToolbar
-import com.boostyboys.mcs.ui.teams.TeamDisplay
 
-data class MatchDetailsScreen(
-    val match: Match,
-) : Screen {
+data class TeamDetailsScreen(val team: Team) : Screen {
 
     @Composable
     override fun Content() {
@@ -36,7 +30,7 @@ data class MatchDetailsScreen(
             Scaffold(
                 topBar = {
                     McsToolbar(
-                        title = "Match Details",
+                        title = team.name,
                         onBackClicked = {
                             navigator.pop()
                         },
@@ -44,23 +38,24 @@ data class MatchDetailsScreen(
                 },
                 content = {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(64.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            TeamDisplay(match.homeTeam)
+                        TeamDisplay(team)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = "${team.wins}-${team.losses}")
 
-                            Text("vs")
+                        Spacer(modifier = Modifier.height(40.dp))
 
-                            TeamDisplay(match.awayTeam)
+                        team.players.forEach {
+                            Text(
+                                modifier = Modifier.align(Alignment.Start),
+                                text = it.name,
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 },

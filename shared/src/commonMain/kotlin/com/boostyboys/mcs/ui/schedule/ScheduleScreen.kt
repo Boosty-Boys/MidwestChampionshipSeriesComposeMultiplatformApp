@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.models.Team
+import com.boostyboys.mcs.data.models.risingStarSeasonEightWeekNineSchedule
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
 
@@ -30,7 +30,10 @@ class ScheduleScreen : Screen {
         ) {
             Scaffold(
                 topBar = {
-                    McsToolbar(title = "Schedule")
+                    McsToolbar(
+                        title = "Schedule",
+                        subtitle = "Rising Star | Week 8",
+                    )
                 },
                 content = {
                     LazyColumn(
@@ -41,20 +44,17 @@ class ScheduleScreen : Screen {
                     ) {
                         item {
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("10/11/2023")
+                            Text(risingStarSeasonEightWeekNineSchedule.matches.first().date)
                             Spacer(modifier = Modifier.height(8.dp))
                         }
 
-                        items(matches) { pair ->
-                            val homeTeam = pair.first
-                            val awayTeam = pair.second
-                            ScheduleCell(
+                        items(risingStarSeasonEightWeekNineSchedule.matches) { match ->
+                            MatchCell(
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                homeTeam = homeTeam,
-                                awayTeam = awayTeam,
+                                match = match,
                                 onClick = {
                                     navigator.push(
-                                        MatchDetailsScreen(homeTeam, awayTeam),
+                                        MatchDetailsScreen(match),
                                     )
                                 },
                             )
@@ -64,19 +64,4 @@ class ScheduleScreen : Screen {
             )
         }
     }
-
-    private val matches: List<Pair<Team, Team>> = listOf(
-        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
-        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
-        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
-        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
-        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
-        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
-        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
-        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
-        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
-        Pair(Team("Rochester Rhythm"), Team("Hibbing Rangers")),
-        Pair(Team("Mankato Atlas"), Team("Bloomington Maulers")),
-        Pair(Team("Duluth Superiors"), Team("Brainerd Victory")),
-    )
 }

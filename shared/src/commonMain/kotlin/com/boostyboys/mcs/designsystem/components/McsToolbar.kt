@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun McsToolbar(
@@ -32,7 +33,7 @@ fun McsToolbar(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         content = {
             // back button if it exists, otherwise use a spacer
             if (onBackClicked != null) {
@@ -58,12 +59,18 @@ fun McsToolbar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Text(text = title)
+                Text(
+                    text = title,
+                    fontSize = 16.sp,
+                )
 
                 subtitle?.let {
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(text = it)
+                    Text(
+                        text = it,
+                        fontSize = 12.sp,
+                    )
                 }
             }
 

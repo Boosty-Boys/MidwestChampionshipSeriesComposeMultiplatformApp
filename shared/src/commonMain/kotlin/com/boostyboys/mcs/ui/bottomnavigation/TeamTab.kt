@@ -9,7 +9,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
-import com.boostyboys.mcs.ui.teams.TeamsScreen
+import com.boostyboys.mcs.ui.teams.StandingsScreen
 
 object TeamTab : Tab {
 
@@ -30,7 +30,7 @@ object TeamTab : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(TeamsScreen()) { navigator ->
+        Navigator(StandingsScreen()) { navigator ->
             SlideTransition(navigator) { screen ->
                 screen.Content()
             }
