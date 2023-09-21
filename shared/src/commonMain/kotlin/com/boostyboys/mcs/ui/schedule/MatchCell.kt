@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.models.Match
 import com.boostyboys.mcs.data.models.Team
 
+private const val TEAM_COLUMN_WEIGHT = 6f
+
 @Composable
 fun MatchCell(
     modifier: Modifier = Modifier,
@@ -48,7 +50,7 @@ fun MatchCell(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier.weight(6f),
+                modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
                 TeamRow(match.homeTeam)
 
