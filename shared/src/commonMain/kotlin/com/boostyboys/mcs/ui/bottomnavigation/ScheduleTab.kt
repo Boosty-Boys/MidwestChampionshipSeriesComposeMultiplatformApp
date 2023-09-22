@@ -1,25 +1,27 @@
-package com.boostyboys.mcs.ui
+package com.boostyboys.mcs.ui.bottomnavigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.boostyboys.mcs.TabContent
+import cafe.adriel.voyager.transitions.SlideTransition
+import com.boostyboys.mcs.ui.schedule.ScheduleScreen
 
-object TeamTab : Tab {
+object ScheduleTab : Tab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Teams"
-            val icon = rememberVectorPainter(Icons.Default.Person)
+            val title = "Schedule"
+            val icon = rememberVectorPainter(Icons.Default.DateRange)
 
             return remember {
                 TabOptions(
-                    index = 1u,
+                    index = 0u,
                     title = title,
                     icon = icon,
                 )
@@ -28,6 +30,10 @@ object TeamTab : Tab {
 
     @Composable
     override fun Content() {
-        TabContent()
+        Navigator(ScheduleScreen()) { navigator ->
+            SlideTransition(navigator) { screen ->
+                screen.Content()
+            }
+        }
     }
 }

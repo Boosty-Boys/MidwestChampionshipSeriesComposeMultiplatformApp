@@ -12,8 +12,20 @@ struct ComposeView: UIViewControllerRepresentable {
 
 struct ContentView: View {
     var body: some View {
-        // todo joer - should keyboard be an ignored safe area?
-        ComposeView()
-            .ignoresSafeArea(.keyboard)
+        ZStack {
+            Color(hex: 0xFF6200EE).edgesIgnoringSafeArea(.all)
+
+            ComposeView()
+                .ignoresSafeArea(.keyboard)
+        }
+    }
+}
+
+extension Color {
+    init(hex: UInt) {
+        let red = Double((hex >> 16) & 0xFF) / 255.0
+        let green = Double((hex >> 8) & 0xFF) / 255.0
+        let blue = Double(hex & 0xFF) / 255.0
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: 1.0)
     }
 }
