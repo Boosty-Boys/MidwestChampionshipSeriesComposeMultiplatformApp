@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.boostyboys.mcs.data.models.Match
-import com.boostyboys.mcs.data.models.Team
+import com.boostyboys.mcs.data.api.models.Match
+import com.boostyboys.mcs.data.api.models.Team
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 
@@ -52,11 +52,11 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-                TeamRow(match.homeTeam)
+                TeamRow(match.teamOne)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TeamRow(match.awayTeam)
+                TeamRow(match.teamTwo)
             }
 
             // divider
@@ -79,20 +79,7 @@ fun MatchCell(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = match.time,
-                    fontSize = 12.sp,
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                val streamText = if (match.isOnStream) {
-                    "on stream"
-                } else {
-                    "off stream"
-                }
-
-                Text(
-                    text = streamText,
+                    text = "todo",
                     fontSize = 12.sp,
                 )
             }

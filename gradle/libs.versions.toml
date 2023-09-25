@@ -7,6 +7,7 @@ kotlin = "1.8.20"
 detektGradlePlugin = "1.23.1"
 voyager = "1.0.0-rc07"
 koin = "3.5.0"
+dateTime = "0.4.1"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -24,3 +25,5 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 
 koin = { module = "io.insert-koin:koin-core", version.ref = "koin"}
+
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime" }

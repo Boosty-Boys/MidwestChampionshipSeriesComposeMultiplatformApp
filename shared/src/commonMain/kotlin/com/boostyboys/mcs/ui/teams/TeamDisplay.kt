@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.models.Team
+import com.boostyboys.mcs.data.api.models.Team
 
 @Composable
 fun TeamDisplay(

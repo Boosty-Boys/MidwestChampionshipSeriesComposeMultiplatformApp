@@ -56,6 +56,7 @@ kotlin {
                 implementation(libs.voyager.koin)
                 implementation(libs.voyager.tabNavigator)
                 implementation(libs.koin)
+                implementation(libs.kotlinx.datetime)
             }
         }
         val androidMain by getting {
