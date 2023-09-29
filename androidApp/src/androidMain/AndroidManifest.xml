@@ -8,6 +8,7 @@
     <!--  moko-media demo block start  -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--  moko-media demo block end  -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"

@@ -56,11 +56,15 @@ data class MatchDetailsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            TeamDisplay(match.teamOne)
+                            match.teamOne?.let { team ->
+                                TeamDisplay(team)
+                            }
 
                             Text("vs")
 
-                            TeamDisplay(match.teamTwo)
+                            match.teamTwo?.let { team ->
+                                TeamDisplay(team)
+                            }
                         }
                     }
                 },

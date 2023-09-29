@@ -31,7 +31,7 @@ class StandingsScreenModel(
     }
 
     fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonId = season.id
+        localRepository.selectedSeasonNumber = season.name
         _state.value = state.value.copy(
             selectedSeason = season,
         )
@@ -52,7 +52,7 @@ class StandingsScreenModel(
         when (val seasonsResult = mcsRepository.getSeasons()) {
             is Either.Success -> {
                 val selectedSeason = seasonsResult.value.find {
-                    it.id == localRepository.selectedSeasonId
+                    it.name == localRepository.selectedSeasonNumber
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
@@ -72,7 +72,7 @@ class StandingsScreenModel(
     }
 
     private suspend fun getLeagues(season: Season) {
-        when (val leaguesResult = mcsRepository.getLeagues(season.id)) {
+        when (val leaguesResult = mcsRepository.getLeagues(season.name)) {
             is Either.Success -> {
                 val selectedLeague = leaguesResult.value.find {
                     it.id == localRepository.selectedLeagueId
@@ -97,7 +97,7 @@ class StandingsScreenModel(
     private suspend fun getTeams(season: Season, league: League) {
         when (
             val teamsResult = mcsRepository.getTeams(
-                seasonId = season.id,
+                seasonNumber = season.name,
                 leagueId = league.id,
             )
         ) {

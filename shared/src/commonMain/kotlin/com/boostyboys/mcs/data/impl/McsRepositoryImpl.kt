@@ -3,93 +3,84 @@ package com.boostyboys.mcs.data.impl
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.League
+import com.boostyboys.mcs.data.api.models.LeagueSeason
+import com.boostyboys.mcs.data.api.models.LeagueSeason.Companion.toSeasons
 import com.boostyboys.mcs.data.api.models.Match
 import com.boostyboys.mcs.data.api.models.Season
 import com.boostyboys.mcs.data.api.models.Team
-import com.boostyboys.mcs.data.impl.McsTestData.CHALLENGER_ID
-import com.boostyboys.mcs.data.impl.McsTestData.PREMIER_ID
-import com.boostyboys.mcs.data.impl.McsTestData.RISING_STAR_ID
-import com.boostyboys.mcs.data.impl.McsTestData.SEASON_ONE_ID
-import com.boostyboys.mcs.data.impl.McsTestData.SEASON_TWO_ID
+import com.boostyboys.mcs.networking.api.McsManager
+import kotlin.time.Duration
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
-class McsRepositoryImpl : McsRepository {
+private const val LOAD_DELAY_MINUTES = 30
+
+class McsRepositoryImpl(
+    private val mcsManager: McsManager,
+) : McsRepository {
+
+    private var lastLoadTime: TimeMark? = null
+    private var leagueSeasons: List<LeagueSeason>? = null
 
     override suspend fun getSeasons(): Either<List<Season>, Throwable> {
-        return Either.success(McsTestData.seasons)
+        val elapsedTime = lastLoadTime?.elapsedNow() ?: Duration.ZERO
+
+        leagueSeasons?.let {
+            if (elapsedTime.inWholeMinutes < LOAD_DELAY_MINUTES) {
+                return Either.success(it.toSeasons())
+            }
+        }
+
+        lastLoadTime = TimeSource.Monotonic.markNow()
+
+        return when (val leagueSeasonsResponse = mcsManager.getSeasons()) {
+            is Either.Success -> {
+                val leagueSeasonsValue = leagueSeasonsResponse.value
+                leagueSeasons = leagueSeasonsValue
+
+                Either.success(leagueSeasonsValue.toSeasons())
+            }
+            is Either.Failure -> {
+                leagueSeasonsResponse
+            }
+        }
     }
 
-    override suspend fun getLeagues(seasonId: String): Either<List<League>, Throwable> {
+    override suspend fun getLeagues(seasonNumber: String): Either<List<League>, Throwable> {
         return Either.success(
-            McsTestData.leagues.filter {
-                it.seasonIds.contains(seasonId)
-            },
+            leagueSeasons?.mapNotNull {
+                if (it.name == seasonNumber) {
+                    it.league
+                } else {
+                    null
+                }
+            } ?: emptyList(),
         )
     }
 
     override suspend fun getTeams(
-        seasonId: String,
+        seasonNumber: String,
         leagueId: String,
     ): Either<List<Team>, Throwable> {
-        return when (seasonId) {
-            SEASON_ONE_ID -> {
-                when (leagueId) {
-                    PREMIER_ID -> Either.success(McsTestTeams.s1PremierTeams)
-                    CHALLENGER_ID -> Either.success(McsTestTeams.s1ChallengerTeams)
-                    else -> Either.failure(Exception("Unknown leagueId: $seasonId"))
-                }
-            }
-            SEASON_TWO_ID -> {
-                when (leagueId) {
-                    PREMIER_ID -> Either.success(McsTestTeams.s2PremierTeams)
-                    CHALLENGER_ID -> Either.success(McsTestTeams.s2ChallengerTeams)
-                    RISING_STAR_ID -> Either.success(McsTestTeams.s2RisingStarTeams)
-                    else -> Either.failure(Exception("Unknown leagueId: $seasonId"))
-                }
-            }
-            else -> {
-                Either.failure(Exception("Unknown seasonId: $seasonId"))
-            }
-        }
+        return Either.success(
+            leagueSeasons?.filter {
+                it.league.id == leagueId && it.name == seasonNumber
+            }?.map {
+                it.teams
+            }?.flatten() ?: emptyList(),
+        )
     }
 
     override suspend fun getMatches(
-        seasonId: String,
+        seasonNumber: String,
         leagueId: String,
     ): Either<List<Match>, Throwable> {
-        return when (seasonId) {
-            SEASON_ONE_ID -> {
-                when (leagueId) {
-                    PREMIER_ID -> Either.success(
-                        McsTestSchedule.season1Week1PremierMatches +
-                            McsTestSchedule.season1Week2PremierMatches,
-                    )
-                    CHALLENGER_ID -> Either.success(
-                        McsTestSchedule.season1Week1ChallengerMatches +
-                            McsTestSchedule.season1Week2ChallengerMatches,
-                    )
-                    else -> Either.failure(Exception("Unknown leagueId: $seasonId"))
-                }
-            }
-            SEASON_TWO_ID -> {
-                when (leagueId) {
-                    PREMIER_ID -> Either.success(
-                        McsTestSchedule.season2Week1PremierMatches +
-                            McsTestSchedule.season2Week2PremierMatches,
-                    )
-                    CHALLENGER_ID -> Either.success(
-                        McsTestSchedule.season2Week1ChallengerMatches +
-                            McsTestSchedule.season2Week2ChallengerMatches,
-                    )
-                    RISING_STAR_ID -> Either.success(
-                        McsTestSchedule.season2Week1RisingStarMatches +
-                            McsTestSchedule.season2Week2RisingStarMatches,
-                    )
-                    else -> Either.failure(Exception("Unknown leagueId: $seasonId"))
-                }
-            }
-            else -> {
-                Either.failure(Exception("Unknown seasonId: $seasonId"))
-            }
-        }
+        return Either.success(
+            leagueSeasons?.filter {
+                it.league.id == leagueId && it.name == seasonNumber
+            }?.map {
+                it.matches
+            }?.flatten() ?: emptyList(),
+        )
     }
 }

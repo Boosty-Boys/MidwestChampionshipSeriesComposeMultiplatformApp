@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -26,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.Screen
@@ -75,7 +72,7 @@ class StandingsScreen : Screen {
                     McsToolbar(
                         title = McsStrings.STANDINGS,
                         subtitle = (viewState as? StandingsViewState.Content)?.let {
-                            "${viewState.selectedSeason.name} | ${viewState.selectedLeague.name}"
+                            "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name}"
                         },
                         actionIconOptions = ActionIconOptions(
                             icon = Icons.Default.Menu,
@@ -136,8 +133,6 @@ class StandingsScreen : Screen {
         team: Team,
         onTeamClicked: (Team) -> Unit,
     ) {
-        val logo = rememberVectorPainter(team.logo)
-
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -152,11 +147,12 @@ class StandingsScreen : Screen {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    painter = logo,
-                    contentDescription = null,
-                )
+                // TODO load image with avatar url
+//                Icon(
+//                    modifier = Modifier.size(32.dp),
+//                    painter = logo,
+//                    contentDescription = null,
+//                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 

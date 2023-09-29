@@ -1,9 +1,7 @@
 package com.boostyboys.mcs.data.api.models
 
 data class Season(
-    val id: String,
-    val name: String,
-    val order: Int,
+    val ids: List<String>,
+    val name: String, // season number (i.e. "1")
     val leagueIds: List<String>,
-    val weeks: Int,
 )

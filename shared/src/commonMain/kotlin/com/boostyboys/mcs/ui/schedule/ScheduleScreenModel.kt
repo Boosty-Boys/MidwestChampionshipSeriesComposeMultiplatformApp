@@ -35,7 +35,7 @@ class ScheduleScreenModel(
     }
 
     fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonId = season.id
+        localRepository.selectedSeasonNumber = season.name
         _state.value = state.value.copy(
             selectedSeason = season,
         )
@@ -65,7 +65,7 @@ class ScheduleScreenModel(
         when (val seasonsResult = mcsRepository.getSeasons()) {
             is Either.Success -> {
                 val selectedSeason = seasonsResult.value.find {
-                    it.id == localRepository.selectedSeasonId
+                    it.name == localRepository.selectedSeasonNumber
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
@@ -85,7 +85,7 @@ class ScheduleScreenModel(
     }
 
     private suspend fun getLeagues(season: Season) {
-        when (val leaguesResult = mcsRepository.getLeagues(season.id)) {
+        when (val leaguesResult = mcsRepository.getLeagues(season.name)) {
             is Either.Success -> {
                 val selectedLeague = leaguesResult.value.find {
                     it.id == localRepository.selectedLeagueId
@@ -110,7 +110,7 @@ class ScheduleScreenModel(
     private suspend fun getTeamsAndMatches(season: Season, league: League) {
         when (
             val matchesResult = mcsRepository.getMatches(
-                seasonId = season.id,
+                seasonNumber = season.name,
                 leagueId = league.id,
             )
         ) {
@@ -153,12 +153,8 @@ class ScheduleScreenModel(
                         selectedLeague = selectedLeague,
                         selectedWeek = selectedWeek,
                         matches = matches,
-                        seasons = seasons.filter {
-                            it.leagueIds.contains(selectedLeague.id)
-                        },
-                        leagues = leagues.filter {
-                            it.seasonIds.contains(selectedSeason.id)
-                        },
+                        seasons = seasons,
+                        leagues = leagues,
                         weeks = weeks,
                     ),
                 )

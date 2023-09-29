@@ -7,6 +7,7 @@ plugins {
     // also re-add back the script in project.pbxproj from the commit this was added
     // id("dev.icerock.mobile.multiplatform-resources")
     id("com.boostyboys.mcs.root")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 kotlin {
@@ -57,6 +58,10 @@ kotlin {
                 implementation(libs.voyager.tabNavigator)
                 implementation(libs.koin)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.core)
+                implementation(libs.ktor.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx)
             }
         }
         val androidMain by getting {
@@ -64,6 +69,7 @@ kotlin {
                 api("androidx.activity:activity-compose:1.6.1")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
+                implementation(libs.ktor.client.okhttp)
             }
         }
         val iosX64Main by getting
@@ -74,10 +80,14 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
+                implementation(libs.ktor.client.okhttp)
             }
         }
     }

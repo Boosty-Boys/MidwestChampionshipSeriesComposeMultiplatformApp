@@ -8,6 +8,7 @@ plugins {
     // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
     // id("dev.icerock.mobile.multiplatform-resources").apply(false)
     alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     id("io.gitlab.arturbosch.detekt").version(libs.versions.detektGradlePlugin)
 }
 
