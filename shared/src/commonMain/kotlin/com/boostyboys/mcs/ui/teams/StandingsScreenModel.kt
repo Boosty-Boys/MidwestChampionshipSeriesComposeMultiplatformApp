@@ -24,10 +24,28 @@ class StandingsScreenModel(
     private val _viewState: MutableStateFlow<StandingsViewState> = MutableStateFlow(StandingsViewState.Loading)
     val viewState: StateFlow<StandingsViewState> get() = _viewState
 
-    init {
+    fun loadData() {
         coroutineScope.launch {
             getSeasons()
         }
+    }
+
+    fun updateSelectedSeason(season: Season) {
+        localRepository.selectedSeasonId = season.id
+        _state.value = state.value.copy(
+            selectedSeason = season,
+        )
+
+        loadData()
+    }
+
+    fun updateSelectedLeague(league: League) {
+        localRepository.selectedLeagueId = league.id
+        _state.value = state.value.copy(
+            selectedLeague = league,
+        )
+
+        loadData()
     }
 
     private suspend fun getSeasons() {
@@ -38,7 +56,10 @@ class StandingsScreenModel(
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
-                    _state.value = state.value.copy(season = selectedSeason)
+                    _state.value = state.value.copy(
+                        selectedSeason = selectedSeason,
+                        seasons = seasonsResult.value,
+                    )
                     getLeagues(selectedSeason)
                 } else {
                     _viewState.emit(StandingsViewState.Error())
@@ -58,7 +79,10 @@ class StandingsScreenModel(
                 } ?: leaguesResult.value.firstOrNull()
 
                 if (selectedLeague != null) {
-                    _state.value = state.value.copy(league = selectedLeague)
+                    _state.value = state.value.copy(
+                        selectedLeague = selectedLeague,
+                        leagues = leaguesResult.value,
+                    )
                     getTeams(season = season, league = selectedLeague)
                 } else {
                     _viewState.emit(StandingsViewState.Error())
@@ -80,9 +104,11 @@ class StandingsScreenModel(
             is Either.Success -> {
                 _viewState.emit(
                     StandingsViewState.Content(
-                        season = season,
-                        league = league,
+                        selectedSeason = season,
+                        selectedLeague = league,
                         teams = teamsResult.value,
+                        seasons = state.value.seasons,
+                        leagues = state.value.leagues,
                     ),
                 )
             }
@@ -94,9 +120,11 @@ class StandingsScreenModel(
 }
 
 data class StandingsState(
-    val season: Season? = null,
-    val league: League? = null,
+    val selectedSeason: Season? = null,
+    val selectedLeague: League? = null,
     val teams: List<Team> = emptyList(),
+    val seasons: List<Season> = emptyList(),
+    val leagues: List<League> = emptyList(),
 )
 
 sealed interface StandingsViewState {
@@ -105,9 +133,11 @@ sealed interface StandingsViewState {
 
     @Immutable
     data class Content(
-        val season: Season,
-        val league: League,
+        val selectedSeason: Season,
+        val selectedLeague: League,
         val teams: List<Team>,
+        val seasons: List<Season>,
+        val leagues: List<League>,
     ) : StandingsViewState
 
     @Immutable

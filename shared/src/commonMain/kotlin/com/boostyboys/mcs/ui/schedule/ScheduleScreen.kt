@@ -14,8 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -24,6 +27,7 @@ import com.boostyboys.mcs.data.api.models.Match
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
+import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
 import kotlinx.datetime.LocalDate
 
@@ -35,6 +39,30 @@ class ScheduleScreen : Screen {
         val screenModel = getScreenModel<ScheduleScreenModel>()
         val viewState = screenModel.viewState.collectAsState().value
 
+        val dialogState = remember { mutableStateOf(false) }
+
+        LifecycleEffect(
+            onStarted = {
+                screenModel.loadData()
+            },
+        )
+
+        MenuDialog(
+            dialogShowingState = dialogState,
+            seasons = (viewState as? ScheduleViewState.Content)?.seasons ?: emptyList(),
+            leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
+            weeks = (viewState as? ScheduleViewState.Content)?.weeks,
+            onSeasonClicked = {
+                screenModel.updateSelectedSeason(it)
+            },
+            onLeagueClicked = {
+                screenModel.updateSelectedLeague(it)
+            },
+            onWeekClicked = {
+                screenModel.updateSelectedWeek(it)
+            },
+        )
+
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -43,13 +71,13 @@ class ScheduleScreen : Screen {
                     McsToolbar(
                         title = McsStrings.SCHEDULE,
                         subtitle = (viewState as? ScheduleViewState.Content)?.let {
-                            "${viewState.league.name} | ${McsStrings.WEEK} ${viewState.week}"
+                            "${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | ${McsStrings.WEEK} ${viewState.selectedWeek}"
                         },
                         actionIconOptions = ActionIconOptions(
                             icon = Icons.Default.Menu,
                             contentDescription = McsStrings.MENU,
                             onClick = {
-                                // TODO show menu to change league or season
+                                dialogState.value = true
                             },
                         ),
                     )

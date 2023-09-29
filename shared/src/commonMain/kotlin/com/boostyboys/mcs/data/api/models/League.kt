@@ -5,6 +5,6 @@ data class League(
     val name: String,
     val order: Int,
     val seasonIds: List<String>,
-    val alternateNameBySeason: Map<String, String?>,
+    val alternateNameBySeason: Map<String, String?> = mapOf(),
     val teamsIdsBySeason: Map<String, List<String>>,
 )

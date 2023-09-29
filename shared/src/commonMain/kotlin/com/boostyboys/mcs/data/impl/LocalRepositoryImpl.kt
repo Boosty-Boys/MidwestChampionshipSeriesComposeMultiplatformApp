@@ -6,4 +6,5 @@ import com.boostyboys.mcs.data.api.LocalRepository
 class LocalRepositoryImpl : LocalRepository {
     override var selectedSeasonId: String = ""
     override var selectedLeagueId: String = ""
+    override var selectedWeek: Int = 1
 }

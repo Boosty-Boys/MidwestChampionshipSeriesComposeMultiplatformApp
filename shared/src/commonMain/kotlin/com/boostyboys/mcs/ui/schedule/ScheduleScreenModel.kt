@@ -25,9 +25,40 @@ class ScheduleScreenModel(
     val viewState: StateFlow<ScheduleViewState> get() = _viewState
 
     init {
+        loadData()
+    }
+
+    fun loadData() {
         coroutineScope.launch {
             getSeasons()
         }
+    }
+
+    fun updateSelectedSeason(season: Season) {
+        localRepository.selectedSeasonId = season.id
+        _state.value = state.value.copy(
+            selectedSeason = season,
+        )
+
+        loadData()
+    }
+
+    fun updateSelectedLeague(league: League) {
+        localRepository.selectedLeagueId = league.id
+        _state.value = state.value.copy(
+            selectedLeague = league,
+        )
+
+        loadData()
+    }
+
+    fun updateSelectedWeek(week: Int) {
+        localRepository.selectedWeek = week
+        _state.value = state.value.copy(
+            selectedWeek = week,
+        )
+
+        loadData()
     }
 
     private suspend fun getSeasons() {
@@ -38,7 +69,10 @@ class ScheduleScreenModel(
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
-                    _state.value = state.value.copy(season = selectedSeason)
+                    _state.value = state.value.copy(
+                        selectedSeason = selectedSeason,
+                        seasons = seasonsResult.value,
+                    )
                     getLeagues(selectedSeason)
                 } else {
                     _viewState.emit(ScheduleViewState.Error())
@@ -58,7 +92,10 @@ class ScheduleScreenModel(
                 } ?: leaguesResult.value.firstOrNull()
 
                 if (selectedLeague != null) {
-                    _state.value = state.value.copy(league = selectedLeague)
+                    _state.value = state.value.copy(
+                        selectedLeague = selectedLeague,
+                        leagues = leaguesResult.value,
+                    )
                     getTeamsAndMatches(season = season, league = selectedLeague)
                 } else {
                     _viewState.emit(ScheduleViewState.Error())
@@ -86,12 +123,15 @@ class ScheduleScreenModel(
                     groupedMatches[week]?.sortedBy { it.dateTime } ?: emptyList()
                 }
 
-                _state.value = state.value.copy(matchesByWeek = sortedMatches)
+                val selectedWeek = state.value.selectedWeek ?: sortedWeeks.firstOrNull()
 
-                val defaultWeek = sortedMatches.keys.firstOrNull()
+                _state.value = state.value.copy(
+                    matchesByWeek = sortedMatches,
+                    selectedWeek = selectedWeek,
+                )
 
-                if (defaultWeek != null) {
-                    updateViewWithMatchesForWeek(defaultWeek)
+                if (selectedWeek != null) {
+                    updateViewWithMatchesForWeek(selectedWeek, sortedWeeks)
                 } else {
                     _viewState.emit(ScheduleViewState.Error())
                 }
@@ -102,17 +142,24 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun updateViewWithMatchesForWeek(week: Int) {
+    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Int, weeks: List<Int>) {
         with(state.value) {
-            val matches = matchesByWeek[week]
+            val matches = matchesByWeek[selectedWeek]
 
-            if (matches != null && season != null && league != null) {
+            if (matches != null && selectedSeason != null && selectedLeague != null) {
                 _viewState.emit(
                     ScheduleViewState.Content(
-                        season = season,
-                        league = league,
-                        week = week,
+                        selectedSeason = selectedSeason,
+                        selectedLeague = selectedLeague,
+                        selectedWeek = selectedWeek,
                         matches = matches,
+                        seasons = seasons.filter {
+                            it.leagueIds.contains(selectedLeague.id)
+                        },
+                        leagues = leagues.filter {
+                            it.seasonIds.contains(selectedSeason.id)
+                        },
+                        weeks = weeks,
                     ),
                 )
             } else {
@@ -123,8 +170,11 @@ class ScheduleScreenModel(
 }
 
 data class ScheduleState(
-    val season: Season? = null,
-    val league: League? = null,
+    val selectedSeason: Season? = null,
+    val selectedLeague: League? = null,
+    val selectedWeek: Int? = null,
+    val seasons: List<Season> = emptyList(),
+    val leagues: List<League> = emptyList(),
     val matchesByWeek: Map<Int, List<Match>> = emptyMap(),
 )
 
@@ -134,9 +184,12 @@ sealed interface ScheduleViewState {
 
     @Immutable
     data class Content(
-        val season: Season,
-        val league: League,
-        val week: Int,
+        val selectedSeason: Season,
+        val selectedLeague: League,
+        val selectedWeek: Int,
+        val seasons: List<Season>,
+        val leagues: List<League>,
+        val weeks: List<Int>,
         val matches: List<Match>,
     ) : ScheduleViewState
 

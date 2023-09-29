@@ -39,7 +39,7 @@ object McsTestData {
         ),
         League(
             id = CHALLENGER_ID,
-            name = CHALLENGER_ID,
+            name = "Challenger",
             order = 2,
             seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
             alternateNameBySeason = mapOf(SEASON_ONE_ID to "CLMN"),
@@ -49,8 +49,7 @@ object McsTestData {
             id = RISING_STAR_ID,
             name = "Rising Star",
             order = 3,
-            seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
-            alternateNameBySeason = mapOf(SEASON_ONE_ID to "MNRS"),
+            seasonIds = listOf(SEASON_TWO_ID),
             teamsIdsBySeason = mapOf(),
         ),
     )
