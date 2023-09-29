@@ -15,16 +15,12 @@ object McsTestData {
         Season(
             id = SEASON_ONE_ID,
             name = "Season 1",
-            order = 1,
             leagueIds = listOf(PREMIER_ID, CHALLENGER_ID),
-            weeks = 2,
         ),
         Season(
             id = SEASON_TWO_ID,
             name = "Season 2",
-            order = 2,
             leagueIds = listOf(PREMIER_ID, CHALLENGER_ID, RISING_STAR_ID),
-            weeks = 2,
         ),
     )
 
@@ -32,21 +28,18 @@ object McsTestData {
         League(
             id = PREMIER_ID,
             name = "Premier",
-            order = 1,
             seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
             teamsIdsBySeason = mapOf(),
         ),
         League(
             id = CHALLENGER_ID,
             name = "Challenger",
-            order = 2,
             seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
             teamsIdsBySeason = mapOf(),
         ),
         League(
             id = RISING_STAR_ID,
             name = "Rising Star",
-            order = 3,
             seasonIds = listOf(SEASON_TWO_ID),
             teamsIdsBySeason = mapOf(),
         ),
