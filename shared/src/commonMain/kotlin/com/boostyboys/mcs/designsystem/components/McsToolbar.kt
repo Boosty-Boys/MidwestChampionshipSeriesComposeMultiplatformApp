@@ -16,9 +16,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.boostyboys.mcs.ui.McsStrings
 
 @Composable
 fun McsToolbar(
@@ -26,8 +28,7 @@ fun McsToolbar(
     title: String,
     subtitle: String? = null,
     onBackClicked: (() -> Unit)? = null,
-    // assumed to be 64.dp, TODO figure out how to enforce, or if we want multiple action buttons
-    actionIcon: @Composable (() -> Unit)? = null,
+    actionIconOptions: ActionIconOptions? = null,
 ) {
     TopAppBar(
         modifier = modifier
@@ -46,7 +47,7 @@ fun McsToolbar(
                 ) {
                     Icon(
                         painter = iconBack,
-                        contentDescription = "Go Back",
+                        contentDescription = McsStrings.GO_BACK,
                     )
                 }
             } else {
@@ -73,11 +74,26 @@ fun McsToolbar(
             }
 
             // action button if it exists, otherwise use a spacer
-            if (actionIcon != null) {
-                actionIcon()
+            if (actionIconOptions != null) {
+                val iconAction = rememberVectorPainter(actionIconOptions.icon)
+                IconButton(
+                    modifier = Modifier.size(64.dp),
+                    onClick = actionIconOptions.onClick,
+                ) {
+                    Icon(
+                        painter = iconAction,
+                        contentDescription = actionIconOptions.contentDescription,
+                    )
+                }
             } else {
                 Spacer(modifier = Modifier.size(64.dp))
             }
         },
     )
 }
+
+data class ActionIconOptions(
+    val icon: ImageVector,
+    val contentDescription: String? = null,
+    val onClick: () -> Unit,
+)

@@ -5,6 +5,8 @@
 # Workaround for SourceTree / other Git GUI users (https://community.atlassian.com/t5/Bitbucket-questions/SourceTree-Hook-failing-because-paths-don-t-seem-to-be-set/qaq-p/274792)
 source ~/.zshrc
 
+trap 'git stash drop; [ -f "$GIT_STASH_FILE" ] && rm "$GIT_STASH_FILE"; exit 1' ERR
+
 set -e
 
 echo "Running formatter..."
