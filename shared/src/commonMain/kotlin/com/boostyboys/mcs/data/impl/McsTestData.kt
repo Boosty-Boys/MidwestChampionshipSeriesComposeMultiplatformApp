@@ -34,7 +34,6 @@ object McsTestData {
             name = "Premier",
             order = 1,
             seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
-            alternateNameBySeason = mapOf(SEASON_ONE_ID to "MNCS"),
             teamsIdsBySeason = mapOf(),
         ),
         League(
@@ -42,7 +41,6 @@ object McsTestData {
             name = "Challenger",
             order = 2,
             seasonIds = listOf(SEASON_ONE_ID, SEASON_TWO_ID),
-            alternateNameBySeason = mapOf(SEASON_ONE_ID to "CLMN"),
             teamsIdsBySeason = mapOf(),
         ),
         League(

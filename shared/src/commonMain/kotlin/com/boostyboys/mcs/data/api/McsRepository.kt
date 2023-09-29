@@ -8,17 +8,17 @@ import com.boostyboys.mcs.data.api.models.Team
 
 interface McsRepository {
 
-    suspend fun getSeasons(): Either<List<Season>, Exception>
+    suspend fun getSeasons(): Either<List<Season>, Throwable>
 
-    suspend fun getLeagues(seasonId: String): Either<List<League>, Exception>
+    suspend fun getLeagues(seasonId: String): Either<List<League>, Throwable>
 
     suspend fun getTeams(
         seasonId: String,
         leagueId: String,
-    ): Either<List<Team>, Exception>
+    ): Either<List<Team>, Throwable>
 
     suspend fun getMatches(
         seasonId: String,
         leagueId: String,
-    ): Either<List<Match>, Exception>
+    ): Either<List<Match>, Throwable>
 }

@@ -14,11 +14,11 @@ import com.boostyboys.mcs.data.impl.McsTestData.SEASON_TWO_ID
 
 class McsRepositoryImpl : McsRepository {
 
-    override suspend fun getSeasons(): Either<List<Season>, Exception> {
+    override suspend fun getSeasons(): Either<List<Season>, Throwable> {
         return Either.success(McsTestData.seasons)
     }
 
-    override suspend fun getLeagues(seasonId: String): Either<List<League>, Exception> {
+    override suspend fun getLeagues(seasonId: String): Either<List<League>, Throwable> {
         return Either.success(
             McsTestData.leagues.filter {
                 it.seasonIds.contains(seasonId)
@@ -29,7 +29,7 @@ class McsRepositoryImpl : McsRepository {
     override suspend fun getTeams(
         seasonId: String,
         leagueId: String,
-    ): Either<List<Team>, Exception> {
+    ): Either<List<Team>, Throwable> {
         return when (seasonId) {
             SEASON_ONE_ID -> {
                 when (leagueId) {
@@ -55,7 +55,7 @@ class McsRepositoryImpl : McsRepository {
     override suspend fun getMatches(
         seasonId: String,
         leagueId: String,
-    ): Either<List<Match>, Exception> {
+    ): Either<List<Match>, Throwable> {
         return when (seasonId) {
             SEASON_ONE_ID -> {
                 when (leagueId) {

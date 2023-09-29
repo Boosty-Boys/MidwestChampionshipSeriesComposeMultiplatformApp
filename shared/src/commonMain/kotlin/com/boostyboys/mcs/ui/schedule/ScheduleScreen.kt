@@ -71,7 +71,8 @@ class ScheduleScreen : Screen {
                     McsToolbar(
                         title = McsStrings.SCHEDULE,
                         subtitle = (viewState as? ScheduleViewState.Content)?.let {
-                            "${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | ${McsStrings.WEEK} ${viewState.selectedWeek}"
+                            "${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
+                                "${McsStrings.WEEK} ${viewState.selectedWeek}"
                         },
                         actionIconOptions = ActionIconOptions(
                             icon = Icons.Default.Menu,
