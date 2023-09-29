@@ -71,7 +71,7 @@ class ScheduleScreen : Screen {
                     McsToolbar(
                         title = McsStrings.SCHEDULE,
                         subtitle = (viewState as? ScheduleViewState.Content)?.let {
-                            "${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
+                            "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
                                 "${McsStrings.WEEK} ${viewState.selectedWeek}"
                         },
                         actionIconOptions = ActionIconOptions(
@@ -99,9 +99,9 @@ class ScheduleScreen : Screen {
                                     match.dateTime.date
                                 }
 
-                                items(matchesByDay.toList()) { (localDate, matches) ->
+                                items(matchesByDay.toList()) { (date, matches) ->
                                     MatchDayBlock(
-                                        date = localDate,
+                                        date = date,
                                         matches = matches,
                                         onMatchClicked = { match ->
                                             navigator.push(
@@ -136,9 +136,11 @@ class ScheduleScreen : Screen {
         matches: List<Match>,
         onMatchClicked: (Match) -> Unit,
     ) {
+        val dateText = "${date.monthNumber}/${date.dayOfMonth}/${date.year}"
+
         Column {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(date.toString())
+            Text(dateText)
             Spacer(modifier = Modifier.height(8.dp))
 
             matches.forEach { match ->

@@ -35,7 +35,7 @@ class ScheduleScreenModel(
     }
 
     fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonId = season.ids.first()
+        localRepository.selectedSeasonNumber = season.name
         _state.value = state.value.copy(
             selectedSeason = season,
         )
@@ -65,7 +65,7 @@ class ScheduleScreenModel(
         when (val seasonsResult = mcsRepository.getSeasons()) {
             is Either.Success -> {
                 val selectedSeason = seasonsResult.value.find {
-                    it.ids.first() == localRepository.selectedSeasonId
+                    it.name == localRepository.selectedSeasonNumber
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
@@ -85,7 +85,7 @@ class ScheduleScreenModel(
     }
 
     private suspend fun getLeagues(season: Season) {
-        when (val leaguesResult = mcsRepository.getLeagues(season.ids.first())) {
+        when (val leaguesResult = mcsRepository.getLeagues(season.name)) {
             is Either.Success -> {
                 val selectedLeague = leaguesResult.value.find {
                     it.id == localRepository.selectedLeagueId
@@ -110,7 +110,7 @@ class ScheduleScreenModel(
     private suspend fun getTeamsAndMatches(season: Season, league: League) {
         when (
             val matchesResult = mcsRepository.getMatches(
-                seasonId = season.ids.first(),
+                seasonNumber = season.name,
                 leagueId = league.id,
             )
         ) {

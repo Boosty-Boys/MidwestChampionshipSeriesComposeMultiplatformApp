@@ -11,17 +11,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.api.models.Match
@@ -52,11 +49,15 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-                TeamRow(match.teamOne)
+                match.teamOne?.let { team ->
+                    TeamRow(team)
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TeamRow(match.teamTwo)
+                match.teamTwo?.let { team ->
+                    TeamRow(team)
+                }
             }
 
             // divider
@@ -91,17 +92,17 @@ fun MatchCell(
 private fun TeamRow(
     team: Team,
 ) {
-    val logo = rememberVectorPainter(team.logo)
+//    val logo = rememberVectorPainter(team.avatar)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        Icon(
-            modifier = Modifier.size(32.dp),
-            painter = logo,
-            contentDescription = null,
-        )
+//        Icon(
+//            modifier = Modifier.size(32.dp),
+//            painter = logo,
+//            contentDescription = null,
+//        )
 
         Spacer(modifier = Modifier.width(16.dp))
 

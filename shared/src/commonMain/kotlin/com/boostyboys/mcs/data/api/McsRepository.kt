@@ -10,15 +10,15 @@ interface McsRepository {
 
     suspend fun getSeasons(): Either<List<Season>, Throwable>
 
-    suspend fun getLeagues(seasonId: String): Either<List<League>, Throwable>
+    suspend fun getLeagues(seasonNumber: String): Either<List<League>, Throwable>
 
     suspend fun getTeams(
-        seasonId: String,
+        seasonNumber: String,
         leagueId: String,
     ): Either<List<Team>, Throwable>
 
     suspend fun getMatches(
-        seasonId: String,
+        seasonNumber: String,
         leagueId: String,
     ): Either<List<Match>, Throwable>
 }

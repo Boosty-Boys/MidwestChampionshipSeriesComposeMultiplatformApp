@@ -12,15 +12,12 @@ data class LeagueResponse(
     val name: String,
     @SerialName("season_id")
     val seasonIds: List<String>,
-    @SerialName("team_ids_by_season")
-    val teamIdsBySeason: Map<String, List<String>>,
 ) {
     fun toLocalModel(): League {
         return League(
             id = id,
             name = name,
             seasonIds = seasonIds,
-            teamIdsBySeason = teamIdsBySeason,
         )
     }
 }
