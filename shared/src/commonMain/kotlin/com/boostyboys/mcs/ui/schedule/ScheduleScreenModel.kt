@@ -9,56 +9,64 @@ import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.League
 import com.boostyboys.mcs.data.api.models.Match
 import com.boostyboys.mcs.data.api.models.Season
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.boostyboys.mcs.state.StateHandler
+import com.boostyboys.mcs.state.StateHandlerDelegate
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.HandleMatchClicked
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.Initialize
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
+import com.boostyboys.mcs.ui.schedule.ScheduleEffect.NavigateToMatchDetails
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 class ScheduleScreenModel(
     private val localRepository: LocalRepository,
     private val mcsRepository: McsRepository,
-) : ScreenModel {
+    private val dispatcher: CoroutineDispatcher,
+) : ScreenModel,
+    StateHandler<ScheduleState, ScheduleViewState, ScheduleAction, ScheduleEffect>
+    by StateHandlerDelegate(ScheduleState(), ScheduleViewState.Loading)
+{
 
-    private val _state: MutableStateFlow<ScheduleState> = MutableStateFlow(ScheduleState())
-    private val state: StateFlow<ScheduleState> get() = _state
-
-    private val _viewState: MutableStateFlow<ScheduleViewState> = MutableStateFlow(ScheduleViewState.Loading)
-    val viewState: StateFlow<ScheduleViewState> get() = _viewState
-
-    init {
-        loadData()
-    }
-
-    fun loadData() {
-        coroutineScope.launch {
-            getSeasons()
+    override fun handleAction(action: ScheduleAction) {
+        coroutineScope.launch(dispatcher) {
+            when (action) {
+                is Initialize -> {
+                    getSeasons()
+                }
+                is UpdateSelectedSeason -> {
+                    updateSelectedSeason(action.season)
+                }
+                is UpdateSelectedLeague -> {
+                    updateSelectedLeague(action.league)
+                }
+                is UpdateSelectedWeek -> {
+                    updateSelectedWeek(action.week)
+                }
+                is HandleMatchClicked -> {
+                    emitEffect(NavigateToMatchDetails(action.match))
+                }
+            }
         }
     }
 
-    fun updateSelectedSeason(season: Season) {
+    private suspend fun updateSelectedSeason(season: Season) {
         localRepository.selectedSeasonNumber = season.name
-        _state.value = state.value.copy(
-            selectedSeason = season,
-        )
-
-        loadData()
+        updateState { copy(selectedSeason = season) }
+        handleAction(Initialize)
     }
 
-    fun updateSelectedLeague(league: League) {
+    private suspend fun updateSelectedLeague(league: League) {
         localRepository.selectedLeagueId = league.id
-        _state.value = state.value.copy(
-            selectedLeague = league,
-        )
-
-        loadData()
+        updateState { copy(selectedLeague = league) }
+        handleAction(Initialize)
     }
 
-    fun updateSelectedWeek(week: Int) {
+    private suspend fun updateSelectedWeek(week: Int) {
         localRepository.selectedWeek = week
-        _state.value = state.value.copy(
-            selectedWeek = week,
-        )
-
-        loadData()
+        updateState { copy(selectedWeek = week) }
+        handleAction(Initialize)
     }
 
     private suspend fun getSeasons() {
@@ -69,17 +77,19 @@ class ScheduleScreenModel(
                 } ?: seasonsResult.value.firstOrNull()
 
                 if (selectedSeason != null) {
-                    _state.value = state.value.copy(
-                        selectedSeason = selectedSeason,
-                        seasons = seasonsResult.value,
-                    )
+                    updateState {
+                        copy(
+                            selectedSeason = selectedSeason,
+                            seasons = seasonsResult.value,
+                        )
+                    }
                     getLeagues(selectedSeason)
                 } else {
-                    _viewState.emit(ScheduleViewState.Error())
+                    updateViewState { ScheduleViewState.Error() }
                 }
             }
             is Either.Failure -> {
-                _viewState.emit(ScheduleViewState.Error(seasonsResult.error.message))
+                updateViewState { ScheduleViewState.Error(seasonsResult.error.message) }
             }
         }
     }
@@ -92,17 +102,19 @@ class ScheduleScreenModel(
                 } ?: leaguesResult.value.firstOrNull()
 
                 if (selectedLeague != null) {
-                    _state.value = state.value.copy(
-                        selectedLeague = selectedLeague,
-                        leagues = leaguesResult.value,
-                    )
+                    updateState {
+                        copy(
+                            selectedLeague = selectedLeague,
+                            leagues = leaguesResult.value,
+                        )
+                    }
                     getTeamsAndMatches(season = season, league = selectedLeague)
                 } else {
-                    _viewState.emit(ScheduleViewState.Error())
+                    updateViewState { ScheduleViewState.Error() }
                 }
             }
             is Either.Failure -> {
-                _viewState.emit(ScheduleViewState.Error(leaguesResult.error.message))
+                updateViewState { ScheduleViewState.Error(leaguesResult.error.message) }
             }
         }
     }
@@ -125,19 +137,21 @@ class ScheduleScreenModel(
 
                 val selectedWeek = state.value.selectedWeek ?: sortedWeeks.firstOrNull()
 
-                _state.value = state.value.copy(
-                    matchesByWeek = sortedMatches,
-                    selectedWeek = selectedWeek,
-                )
+                updateState {
+                    copy(
+                        matchesByWeek = sortedMatches,
+                        selectedWeek = selectedWeek,
+                    )
+                }
 
                 if (selectedWeek != null) {
                     updateViewWithMatchesForWeek(selectedWeek, sortedWeeks)
                 } else {
-                    _viewState.emit(ScheduleViewState.Error())
+                    updateViewState { ScheduleViewState.Error() }
                 }
             }
             is Either.Failure -> {
-                _viewState.emit(ScheduleViewState.Error(matchesResult.error.message))
+                updateViewState { ScheduleViewState.Error(matchesResult.error.message) }
             }
         }
     }
@@ -147,7 +161,7 @@ class ScheduleScreenModel(
             val matches = matchesByWeek[selectedWeek]
 
             if (matches != null && selectedSeason != null && selectedLeague != null) {
-                _viewState.emit(
+                updateViewState {
                     ScheduleViewState.Content(
                         selectedSeason = selectedSeason,
                         selectedLeague = selectedLeague,
@@ -156,10 +170,10 @@ class ScheduleScreenModel(
                         seasons = seasons,
                         leagues = leagues,
                         weeks = weeks,
-                    ),
-                )
+                    )
+                }
             } else {
-                _viewState.emit(ScheduleViewState.Error())
+                updateViewState { ScheduleViewState.Error() }
             }
         }
     }
@@ -191,4 +205,16 @@ sealed interface ScheduleViewState {
 
     @Immutable
     data class Error(val errorMessage: String? = null) : ScheduleViewState
+}
+
+sealed interface ScheduleAction {
+    data object Initialize : ScheduleAction
+    data class UpdateSelectedSeason(val season: Season) : ScheduleAction
+    data class UpdateSelectedLeague(val league: League) : ScheduleAction
+    data class UpdateSelectedWeek(val week: Int) : ScheduleAction
+    data class HandleMatchClicked(val match: Match) : ScheduleAction
+}
+
+sealed interface ScheduleEffect {
+    data class NavigateToMatchDetails(val match: Match) : ScheduleEffect
 }

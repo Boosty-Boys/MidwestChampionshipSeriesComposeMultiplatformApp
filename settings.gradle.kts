@@ -1,4 +1,4 @@
-rootProject.name = "Midwest Championship Series"
+rootProject.name = "MidwestChampionshipSeries"
 
 include(":androidApp")
 include(":shared")

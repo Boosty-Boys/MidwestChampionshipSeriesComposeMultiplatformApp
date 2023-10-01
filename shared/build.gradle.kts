@@ -64,6 +64,15 @@ kotlin {
                 implementation(libs.ktor.serialization.kotlinx)
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.turbine)
+                implementation(libs.coroutinesTest)
+            }
+        }
+
         val androidMain by getting {
             dependencies {
                 api("androidx.activity:activity-compose:1.6.1")

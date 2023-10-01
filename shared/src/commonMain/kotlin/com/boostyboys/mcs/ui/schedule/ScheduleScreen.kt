@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,10 @@ import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.Initialize
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
+import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
 import kotlinx.datetime.LocalDate
 
 class ScheduleScreen : Screen {
@@ -43,9 +48,19 @@ class ScheduleScreen : Screen {
 
         LifecycleEffect(
             onStarted = {
-                screenModel.loadData()
+                screenModel.handleAction(Initialize)
             },
         )
+
+        LaunchedEffect(screenModel) {
+            screenModel.effect.collect { effect ->
+                when (effect) {
+                    is ScheduleEffect.NavigateToMatchDetails -> {
+                        navigator.push(MatchDetailsScreen(effect.match))
+                    }
+                }
+            }
+        }
 
         MenuDialog(
             dialogShowingState = dialogState,
@@ -53,13 +68,14 @@ class ScheduleScreen : Screen {
             leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
             weeks = (viewState as? ScheduleViewState.Content)?.weeks,
             onSeasonClicked = {
-                screenModel.updateSelectedSeason(it)
+                screenModel.handleAction(UpdateSelectedSeason(it))
             },
             onLeagueClicked = {
-                screenModel.updateSelectedLeague(it)
+                screenModel.handleAction(UpdateSelectedLeague(it))
+
             },
             onWeekClicked = {
-                screenModel.updateSelectedWeek(it)
+                screenModel.handleAction(UpdateSelectedWeek(it))
             },
         )
 
@@ -104,9 +120,7 @@ class ScheduleScreen : Screen {
                                         date = date,
                                         matches = matches,
                                         onMatchClicked = { match ->
-                                            navigator.push(
-                                                MatchDetailsScreen(match),
-                                            )
+                                            screenModel.handleAction(ScheduleAction.HandleMatchClicked(match))
                                         },
                                     )
                                 }
