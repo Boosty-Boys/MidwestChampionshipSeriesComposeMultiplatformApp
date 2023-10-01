@@ -2,14 +2,16 @@
 spotless = "6.21.0"
 detekt = "1.23.1"
 ktlint = "0.49.1"
-agp = "8.1.1"
-kotlin = "1.8.20"
+agp = "8.1.2"
+kotlin = "1.9.0"
 detektGradlePlugin = "1.23.1"
 voyager = "1.0.0-rc07"
 koin = "3.5.0"
 kotlinxDateTime = "0.4.1"
 kotlinxSerializationJson = "1.5.1"
 ktor = "2.3.4"
+compose = "1.5.1"
+mokoResources = "0.22.2"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
