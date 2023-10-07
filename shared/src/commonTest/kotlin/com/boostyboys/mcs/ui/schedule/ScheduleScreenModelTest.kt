@@ -1,13 +1,10 @@
 package com.boostyboys.mcs.ui.schedule
 
 import app.cash.turbine.test
-import com.boostyboys.mcs.data.api.LocalRepository
-import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.impl.FakeLocalRepository
-import com.boostyboys.mcs.data.impl.FakeLocalRepository.Companion.FakeLocalRepositoryOptions
 import com.boostyboys.mcs.data.impl.FakeMcsRepository
-import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.FakeMcsRepositoryOptions
 import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.challengerLeague
+import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.defaultError
 import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.defaultLeaguesList
 import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.defaultSeasonsList
 import com.boostyboys.mcs.data.impl.FakeMcsRepository.Companion.defaultWeeksList
@@ -21,6 +18,7 @@ import com.boostyboys.mcs.state.HandleActionProxy.Companion.verifyActionHandled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runCurrent
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -30,18 +28,16 @@ class ScheduleScreenModelTest {
     private lateinit var classUnderTest: ScheduleScreenModel
     private val dispatcher = UnconfinedTestDispatcher()
 
-    private lateinit var fakeLocalRepository: LocalRepository
-    private lateinit var fakeMcsRepository: McsRepository
+    private lateinit var fakeLocalRepository: FakeLocalRepository
+    private lateinit var fakeMcsRepository: FakeMcsRepository
 
-    private fun setupFakes(
-        mcsRepositoryConfiguration: FakeMcsRepositoryOptions.() -> Unit = {},
-        localRepositoryConfiguration: FakeLocalRepositoryOptions.() -> Unit = {},
-    ) {
-        fakeLocalRepository = FakeLocalRepository(localRepositoryConfiguration)
-        fakeMcsRepository = FakeMcsRepository(mcsRepositoryConfiguration)
+    @BeforeTest
+    fun setup() {
+        fakeLocalRepository = FakeLocalRepository()
+        fakeMcsRepository = FakeMcsRepository()
 
         classUnderTest = ScheduleScreenModel(
-            localRepository = FakeLocalRepository(localRepositoryConfiguration),
+            localRepository = fakeLocalRepository,
             mcsRepository = fakeMcsRepository,
             dispatcher = dispatcher,
         )
@@ -51,7 +47,6 @@ class ScheduleScreenModelTest {
 
     @Test
     fun `Action_Initialize emits ViewState_Loading when data is loading`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         val expected = ScheduleViewState.Loading
 
         classUnderTest.viewState.test {
@@ -63,7 +58,6 @@ class ScheduleScreenModelTest {
 
     @Test
     fun `Action_Initialize emits ViewState_Content when data loads successfully`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         val expected = ScheduleViewState.Content(
             selectedSeason = seasonOne,
             selectedLeague = premierLeague,
@@ -83,8 +77,20 @@ class ScheduleScreenModelTest {
     }
 
     @Test
+    fun `Action_Initialize emits ViewState_Error when data fails to load`() = runTestWithDispatcher(dispatcher) {
+        val expected = ScheduleViewState.Error("Error loading data")
+        fakeMcsRepository.getSeasonsResponse[0] = defaultError
+
+        classUnderTest.viewState.test {
+            classUnderTest.handleAction(ScheduleAction.Initialize)
+            skipItems(1)
+            assertEquals(expected, awaitItem())
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    @Test
     fun `Action_UpdateSelectedSeason updates season and triggers Action_Initialize`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         classUnderTest.updateState { copy(selectedSeason = seasonOne) }
         val expected = seasonTwo
 
@@ -98,7 +104,6 @@ class ScheduleScreenModelTest {
 
     @Test
     fun `Action_UpdateSelectedLeague updates league and triggers Action_Initialize`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         classUnderTest.updateState { copy(selectedLeague = premierLeague) }
         val expected = challengerLeague
 
@@ -112,7 +117,6 @@ class ScheduleScreenModelTest {
 
     @Test
     fun `Action_UpdateSelectedWeek updates week and triggers Action_Initialize`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         classUnderTest.updateState { copy(selectedWeek = 1) }
         val expected = 2
 
@@ -126,7 +130,6 @@ class ScheduleScreenModelTest {
 
     @Test
     fun `Action_HandleMatchClicked emits Effect_NavigateToMatchDetails`() = runTestWithDispatcher(dispatcher) {
-        setupFakes()
         val expected = ScheduleEffect.NavigateToMatchDetails(matchOne)
 
         classUnderTest.effect.test {

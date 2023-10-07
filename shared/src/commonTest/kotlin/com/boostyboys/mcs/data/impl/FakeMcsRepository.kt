@@ -10,55 +10,40 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class FakeMcsRepository(
-    configuration: FakeMcsRepositoryOptions.() -> Unit = {},
-) : McsRepository {
-    var options: FakeMcsRepositoryOptions = FakeMcsRepositoryOptions().apply(configuration)
+class FakeMcsRepository : McsRepository {
 
+    val getSeasonsResponse: MutableList<Either<List<Season>, Throwable>> = mutableListOf(
+        Either.success(defaultSeasonsList),
+    )
     override suspend fun getSeasons(): Either<List<Season>, Throwable> {
-        return with(options) {
-            if (returnDefaultError) {
-                defaultError
-            } else {
-                getSeasonsResponse
-            }
-        }
+        return getSeasonsResponse.removeAt(0)
     }
 
+    val getLeaguesResponse: MutableList<Either<List<League>, Throwable>> = mutableListOf(
+        Either.success(defaultLeaguesList),
+    )
     override suspend fun getLeagues(seasonNumber: String): Either<List<League>, Throwable> {
-        return with(options) {
-            if (returnDefaultError) {
-                defaultError
-            } else {
-                getLeaguesResponse
-            }
-        }
+        return getLeaguesResponse.removeAt(0)
     }
 
+    val getTeamsResponse: MutableList<Either<List<Team>, Throwable>> = mutableListOf(
+        Either.success(defaultTeamsList),
+    )
     override suspend fun getTeams(
         seasonNumber: String,
         leagueId: String,
     ): Either<List<Team>, Throwable> {
-        return with(options) {
-            if (returnDefaultError) {
-                defaultError
-            } else {
-                getTeamsResponse
-            }
-        }
+        return getTeamsResponse.removeAt(0)
     }
 
+    val getMatchesResponse: MutableList<Either<List<Match>, Throwable>> = mutableListOf(
+        Either.success(defaultMatchesList),
+    )
     override suspend fun getMatches(
         seasonNumber: String,
         leagueId: String,
     ): Either<List<Match>, Throwable> {
-        return with(options) {
-            if (returnDefaultError) {
-                defaultError
-            } else {
-                getMatchesResponse
-            }
-        }
+        return getMatchesResponse.removeAt(0)
     }
 
     companion object {
@@ -141,37 +126,5 @@ class FakeMcsRepository(
         val defaultMatchesList = listOf(matchOne, matchTwo)
 
         val defaultWeeksList = listOf(1, 2)
-
-        data class FakeMcsRepositoryOptions(
-            var returnDefaultError: Boolean = false,
-            var getSeasonsResponse: Either<List<Season>, Throwable> = Either.success(
-                defaultSeasonsList,
-            ),
-            var getLeaguesResponse: Either<List<League>, Throwable> = Either.success(
-                defaultLeaguesList,
-            ),
-            var getMatchesResponse: Either<List<Match>, Throwable> = Either.success(
-                defaultMatchesList,
-            ),
-            var getTeamsResponse: Either<List<Team>, Throwable> = Either.success(
-                defaultTeamsList,
-            ),
-        ) {
-            fun configureGetSeasonsResponse(configuration: () -> Either<List<Season>, Throwable>) {
-                getSeasonsResponse = configuration()
-            }
-
-            fun configureGetLeaguesResponse(configuration: () -> Either<List<League>, Throwable>) {
-                getLeaguesResponse = configuration()
-            }
-
-            fun configureGetMatchesResponse(configuration: () -> Either<List<Match>, Throwable>) {
-                getMatchesResponse = configuration()
-            }
-
-            fun configureGetTeamsResponse(configuration: () -> Either<List<Team>, Throwable>) {
-                getTeamsResponse = configuration()
-            }
-        }
     }
 }
