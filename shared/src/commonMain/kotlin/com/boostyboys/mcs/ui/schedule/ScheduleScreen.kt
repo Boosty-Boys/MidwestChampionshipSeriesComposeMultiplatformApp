@@ -72,7 +72,6 @@ class ScheduleScreen : Screen {
             },
             onLeagueClicked = {
                 screenModel.handleAction(UpdateSelectedLeague(it))
-
             },
             onWeekClicked = {
                 screenModel.handleAction(UpdateSelectedWeek(it))

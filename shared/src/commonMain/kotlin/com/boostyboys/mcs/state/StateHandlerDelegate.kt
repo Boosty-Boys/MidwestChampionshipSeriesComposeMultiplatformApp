@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class StateHandlerDelegate<S : Any, V : Any, A : Any, E : Any>(
     initialState: S,
-    initialViewState: V
+    initialViewState: V,
 ) : StateHandler<S, V, A, E> {
 
     private val _state = MutableStateFlow(initialState)
@@ -18,7 +18,7 @@ class StateHandlerDelegate<S : Any, V : Any, A : Any, E : Any>(
 
     private val _effect = MutableSharedFlow<E>()
     override val effect: SharedFlow<E> get() = _effect
-    
+
     override suspend fun updateState(transform: S.() -> S) {
         _state.emit(transform(state.value))
     }

@@ -37,7 +37,7 @@ class FakeMcsRepository(
 
     override suspend fun getTeams(
         seasonNumber: String,
-        leagueId: String
+        leagueId: String,
     ): Either<List<Team>, Throwable> {
         return with(options) {
             if (returnDefaultError) {
@@ -50,7 +50,7 @@ class FakeMcsRepository(
 
     override suspend fun getMatches(
         seasonNumber: String,
-        leagueId: String
+        leagueId: String,
     ): Either<List<Match>, Throwable> {
         return with(options) {
             if (returnDefaultError) {
@@ -60,7 +60,7 @@ class FakeMcsRepository(
             }
         }
     }
-    
+
     companion object {
         val defaultError = Either.failure(Throwable("Error loading data"))
 

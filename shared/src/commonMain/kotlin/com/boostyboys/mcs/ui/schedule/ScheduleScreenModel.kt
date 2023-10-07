@@ -26,8 +26,7 @@ class ScheduleScreenModel(
     private val dispatcher: CoroutineDispatcher,
 ) : ScreenModel,
     StateHandler<ScheduleState, ScheduleViewState, ScheduleAction, ScheduleEffect>
-    by StateHandlerDelegate(ScheduleState(), ScheduleViewState.Loading)
-{
+    by StateHandlerDelegate(ScheduleState(), ScheduleViewState.Loading) {
 
     override fun handleAction(action: ScheduleAction) {
         coroutineScope.launch(dispatcher) {
