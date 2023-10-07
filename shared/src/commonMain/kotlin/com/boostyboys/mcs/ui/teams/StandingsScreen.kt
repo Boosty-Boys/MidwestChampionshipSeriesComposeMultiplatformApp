@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,9 @@ import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
+import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
+import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedLeague
+import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedSeason
 
 class StandingsScreen : Screen {
 
@@ -44,23 +48,33 @@ class StandingsScreen : Screen {
         val screenModel = getScreenModel<StandingsScreenModel>()
         val viewState = screenModel.viewState.collectAsState().value
 
+        val dialogState = remember { mutableStateOf(false) }
+
         LifecycleEffect(
             onStarted = {
-                screenModel.loadData()
+                screenModel.handleAction(StandingsAction.Initialize)
             },
         )
 
-        val dialogState = remember { mutableStateOf(false) }
+        LaunchedEffect(screenModel) {
+            screenModel.effect.collect { effect ->
+                when (effect) {
+                    is StandingsEffect.NavigateToTeamDetails -> {
+                        navigator.push(TeamDetailsScreen(effect.team))
+                    }
+                }
+            }
+        }
 
         MenuDialog(
             dialogShowingState = dialogState,
             seasons = (viewState as? StandingsViewState.Content)?.seasons ?: emptyList(),
             leagues = (viewState as? StandingsViewState.Content)?.leagues ?: emptyList(),
             onSeasonClicked = {
-                screenModel.updateSelectedSeason(it)
+                screenModel.handleAction(UpdateSelectedSeason(it))
             },
             onLeagueClicked = {
-                screenModel.updateSelectedLeague(it)
+                screenModel.handleAction(UpdateSelectedLeague(it))
             },
         )
 
@@ -107,7 +121,7 @@ class StandingsScreen : Screen {
                                     TeamCell(
                                         team = team,
                                         onTeamClicked = {
-                                            navigator.push(TeamDetailsScreen(team))
+                                            screenModel.handleAction(HandleTeamClicked(it))
                                         },
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))

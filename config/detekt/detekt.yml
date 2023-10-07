@@ -497,6 +497,7 @@ style:
   MandatoryBracesLoops:
     active: false
   MaxLineLength:
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
     active: true
     maxLineLength: 120
     excludePackageStatements: true
@@ -547,7 +548,7 @@ style:
     active: false
   ThrowsCount:
     active: true
-    max: 2
+    max: 4
   TrailingWhitespace:
     active: false
   UnderscoresInNumericLiterals:

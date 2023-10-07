@@ -1,12 +1,12 @@
 plugins {
     id("com.boostyboys.mcs.root")
 
-    kotlin("multiplatform").apply(false)
-    id("com.android.application").apply(false)
-    id("com.android.library").apply(false)
-    id("org.jetbrains.compose").apply(false)
+    kotlin("multiplatform").version(libs.versions.kotlin).apply(false)
+    id("com.android.application").version(libs.versions.agp).apply(false)
+    id("com.android.library").version(libs.versions.agp).apply(false)
+    id("org.jetbrains.compose").version(libs.versions.compose).apply(false)
     // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
-    // id("dev.icerock.mobile.multiplatform-resources").apply(false)
+    // id("dev.icerock.mobile.multiplatform-resources").version(libs.versions.mokoResources).apply(false)
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     id("io.gitlab.arturbosch.detekt").version(libs.versions.detektGradlePlugin)
