@@ -30,4 +30,6 @@ class StateHandlerDelegate<S : Any, V : Any, A : Any, E : Any>(
     override suspend fun emitEffect(effect: E) {
         _effect.emit(effect)
     }
+
+    override var proxy: HandleActionProxy<A>? = null
 }

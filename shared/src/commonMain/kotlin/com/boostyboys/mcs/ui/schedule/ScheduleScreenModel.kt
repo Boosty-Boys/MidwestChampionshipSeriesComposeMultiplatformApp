@@ -29,6 +29,7 @@ class ScheduleScreenModel(
     by StateHandlerDelegate(ScheduleState(), ScheduleViewState.Loading) {
 
     override fun handleAction(action: ScheduleAction) {
+        super.handleAction(action)
         coroutineScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
