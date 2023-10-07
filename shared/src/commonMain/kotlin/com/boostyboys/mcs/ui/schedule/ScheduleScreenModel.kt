@@ -1,13 +1,11 @@
 package com.boostyboys.mcs.ui.schedule
 
-import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Match
 import com.boostyboys.mcs.data.api.models.Season
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
@@ -49,24 +47,6 @@ class ScheduleScreenModel(
                 }
             }
         }
-    }
-
-    private suspend fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonNumber = season.name
-        updateState { copy(selectedSeason = season) }
-        handleAction(Initialize)
-    }
-
-    private suspend fun updateSelectedLeague(league: League) {
-        localRepository.selectedLeagueId = league.id
-        updateState { copy(selectedLeague = league) }
-        handleAction(Initialize)
-    }
-
-    private suspend fun updateSelectedWeek(week: Int) {
-        localRepository.selectedWeek = week
-        updateState { copy(selectedWeek = week) }
-        handleAction(Initialize)
     }
 
     private suspend fun getSeasons() {
@@ -177,44 +157,22 @@ class ScheduleScreenModel(
             }
         }
     }
-}
 
-data class ScheduleState(
-    val selectedSeason: Season? = null,
-    val selectedLeague: League? = null,
-    val selectedWeek: Int? = null,
-    val seasons: List<Season> = emptyList(),
-    val leagues: List<League> = emptyList(),
-    val matchesByWeek: Map<Int, List<Match>> = emptyMap(),
-)
+    private suspend fun updateSelectedSeason(season: Season) {
+        localRepository.selectedSeasonNumber = season.name
+        updateState { copy(selectedSeason = season) }
+        handleAction(Initialize)
+    }
 
-sealed interface ScheduleViewState {
-    @Immutable
-    data object Loading : ScheduleViewState
+    private suspend fun updateSelectedLeague(league: League) {
+        localRepository.selectedLeagueId = league.id
+        updateState { copy(selectedLeague = league) }
+        handleAction(Initialize)
+    }
 
-    @Immutable
-    data class Content(
-        val selectedSeason: Season,
-        val selectedLeague: League,
-        val selectedWeek: Int,
-        val seasons: List<Season>,
-        val leagues: List<League>,
-        val weeks: List<Int>,
-        val matches: List<Match>,
-    ) : ScheduleViewState
-
-    @Immutable
-    data class Error(val errorMessage: String? = null) : ScheduleViewState
-}
-
-sealed interface ScheduleAction {
-    data object Initialize : ScheduleAction
-    data class UpdateSelectedSeason(val season: Season) : ScheduleAction
-    data class UpdateSelectedLeague(val league: League) : ScheduleAction
-    data class UpdateSelectedWeek(val week: Int) : ScheduleAction
-    data class HandleMatchClicked(val match: Match) : ScheduleAction
-}
-
-sealed interface ScheduleEffect {
-    data class NavigateToMatchDetails(val match: Match) : ScheduleEffect
+    private suspend fun updateSelectedWeek(week: Int) {
+        localRepository.selectedWeek = week
+        updateState { copy(selectedWeek = week) }
+        handleAction(Initialize)
+    }
 }

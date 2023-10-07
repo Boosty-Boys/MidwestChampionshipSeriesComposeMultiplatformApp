@@ -19,7 +19,7 @@ val appModule = module {
     single<McsManager> { McsManagerImpl() }
     single<McsRepository> { McsRepositoryImpl(get()) }
     factory { ScheduleScreenModel(get(), get(), get(IoDispatcher)) }
-    factory { StandingsScreenModel(get(), get()) }
+    factory { StandingsScreenModel(get(), get(), get(IoDispatcher)) }
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
