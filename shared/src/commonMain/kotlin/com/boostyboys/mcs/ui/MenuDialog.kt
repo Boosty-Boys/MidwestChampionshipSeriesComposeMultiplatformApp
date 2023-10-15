@@ -20,6 +20,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.boostyboys.mcs.data.api.models.League
 import com.boostyboys.mcs.data.api.models.Season
+import com.boostyboys.mcs.data.api.models.Week
 import com.boostyboys.mcs.ui.MenuDialogConfig.LEAGUE_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.MENU_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.SEASON_SELECTION
@@ -32,8 +33,8 @@ fun MenuDialog(
     leagues: List<League>,
     onSeasonClicked: (Season) -> Unit,
     onLeagueClicked: (League) -> Unit,
-    weeks: List<Int>? = null,
-    onWeekClicked: ((Int) -> Unit)? = null,
+    weeks: List<Week>? = null,
+    onWeekClicked: ((Week) -> Unit)? = null,
 ) {
     val configState = remember {
         mutableStateOf(MENU_SELECTION)
@@ -162,8 +163,8 @@ private fun LeagueSelection(
 private fun WeekSelection(
     configState: MutableState<MenuDialogConfig>,
     dialogShowingState: MutableState<Boolean>,
-    weeks: List<Int>,
-    onWeekClicked: (Int) -> Unit,
+    weeks: List<Week>,
+    onWeekClicked: (Week) -> Unit,
 ) {
     Column {
         weeks.forEach {
@@ -173,7 +174,7 @@ private fun WeekSelection(
                     dialogShowingState.value = false
                     configState.value = MENU_SELECTION
                 },
-                text = "${McsStrings.WEEK} $it",
+                text = "${McsStrings.WEEK} ${it.value}",
                 fontSize = 18.sp,
             )
 
