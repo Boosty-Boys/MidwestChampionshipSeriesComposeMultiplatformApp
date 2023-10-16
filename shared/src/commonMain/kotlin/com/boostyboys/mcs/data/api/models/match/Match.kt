@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Match(
     @SerialName("_id") val id: String,
-    @SerialName("status") val status: MatchStatus,
+//    @SerialName("status") val status: MatchStatus,
     @SerialName("week") val week: Int,
     @SerialName("best_of") val bestOf: Int,
     @SerialName("team_one_id") val teamOneId: String?,

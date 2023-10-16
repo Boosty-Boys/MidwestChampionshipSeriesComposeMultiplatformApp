@@ -10,17 +10,23 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class McsManagerImpl : McsManager {
+    @OptIn(ExperimentalSerializationApi::class)
     private val client by lazy {
         HttpClient {
+            install(Logging)
             defaultRequest {
                 url(McsManager.BASE_URL)
                 contentType(ContentType.Application.Json)
@@ -28,7 +34,9 @@ class McsManagerImpl : McsManager {
             install(ContentNegotiation) {
                 json(
                     Json {
+                        prettyPrint = true
                         ignoreUnknownKeys = true
+                        explicitNulls = false
                     },
                 )
             }
@@ -46,8 +54,9 @@ class McsManagerImpl : McsManager {
 
     override suspend fun getSeasonData(request: SeasonDataRequest): Either<SeasonDataResponse, Throwable> {
         return try {
-            val response = client.get("/season_data") {
-                setBody(request)
+            val response = client.post("/season_data") {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(request))
             }
 
             val body = response.body<SeasonDataResponse>()

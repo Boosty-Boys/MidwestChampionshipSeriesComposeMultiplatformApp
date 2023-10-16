@@ -62,6 +62,7 @@ kotlin {
                 implementation(libs.ktor.core)
                 implementation(libs.ktor.content.negotiation)
                 implementation(libs.ktor.serialization.kotlinx)
+                implementation(libs.ktor.client.logging)
             }
         }
 

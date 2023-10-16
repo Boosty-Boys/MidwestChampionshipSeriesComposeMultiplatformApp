@@ -114,9 +114,11 @@ class ScheduleScreen : Screen {
                                     .padding(horizontal = 16.dp),
                             ) {
                                 val matchesByDay = viewState.matches.groupBy { match ->
-                                    Instant.parse(match.scheduledDateTime ?: "").toLocalDateTime(
-                                        TimeZone.currentSystemDefault(),
-                                    ).date
+                                    match.scheduledDateTime?.let { dateTime ->
+                                        Instant.parse(dateTime).toLocalDateTime(
+                                            TimeZone.currentSystemDefault(),
+                                        ).date
+                                    }
                                 }
 
                                 items(matchesByDay.toList()) { (date, matches) ->
@@ -150,11 +152,11 @@ class ScheduleScreen : Screen {
 
     @Composable
     private fun MatchDayBlock(
-        date: LocalDate,
+        date: LocalDate?,
         matches: List<Match>,
         onMatchClicked: (Match) -> Unit,
     ) {
-        val dateText = "${date.monthNumber}/${date.dayOfMonth}/${date.year}"
+        val dateText = "${date?.monthNumber}/${date?.dayOfMonth}/${date?.year}"
 
         Column {
             Spacer(modifier = Modifier.height(16.dp))

@@ -23,6 +23,7 @@ sealed interface ScheduleViewState {
         val selectedWeek: Int,
         val matches: List<Match>,
         val leagues: List<LeagueWithSeasons>,
+        val teams: List<TeamWithResults>,
     ) : ScheduleViewState
 
     @Immutable

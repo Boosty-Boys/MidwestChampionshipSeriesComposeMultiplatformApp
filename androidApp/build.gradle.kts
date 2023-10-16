@@ -35,6 +35,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    packaging {
+        resources.pickFirsts.add("META-INF/versions/9/previous-compilation-data.bin")
+    }
     kotlin {
         jvmToolchain(17)
     }
