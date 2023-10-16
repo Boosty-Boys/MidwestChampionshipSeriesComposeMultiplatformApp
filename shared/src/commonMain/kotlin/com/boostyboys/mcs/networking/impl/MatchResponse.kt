@@ -1,6 +1,7 @@
 package com.boostyboys.mcs.networking.impl
 
 import com.boostyboys.mcs.data.api.models.Match
+import com.boostyboys.mcs.data.api.models.Week
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -21,7 +22,7 @@ data class MatchResponse(
         val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
         return Match(
-            week = week,
+            week = Week(week),
             teamOne = teamOne?.toLocalModel(),
             teamTwo = teamTwo?.toLocalModel(),
             winningTeamId = winningTeamId,

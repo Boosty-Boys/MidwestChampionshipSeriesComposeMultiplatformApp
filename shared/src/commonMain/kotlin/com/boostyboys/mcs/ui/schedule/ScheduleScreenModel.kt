@@ -7,6 +7,7 @@ import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.League
 import com.boostyboys.mcs.data.api.models.Season
+import com.boostyboys.mcs.data.api.models.Week
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.HandleMatchClicked
@@ -110,7 +111,9 @@ class ScheduleScreenModel(
                 // sort the matches into a map grouped by week and sorted by datetime
                 val matches = matchesResult.value
                 val groupedMatches = matches.groupBy { it.week }
-                val sortedWeeks = groupedMatches.keys.sorted()
+                val sortedWeeks = groupedMatches.keys.sortedBy {
+                    it.value
+                }
                 val sortedMatches = sortedWeeks.associateWith { week ->
                     groupedMatches[week]?.sortedBy { it.dateTime } ?: emptyList()
                 }
@@ -136,7 +139,7 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Int, weeks: List<Int>) {
+    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Week, weeks: List<Week>) {
         with(state.value) {
             val matches = matchesByWeek[selectedWeek]
 
@@ -170,7 +173,7 @@ class ScheduleScreenModel(
         handleAction(Initialize)
     }
 
-    private suspend fun updateSelectedWeek(week: Int) {
+    private suspend fun updateSelectedWeek(week: Week) {
         localRepository.selectedWeek = week
         updateState { copy(selectedWeek = week) }
         handleAction(Initialize)
