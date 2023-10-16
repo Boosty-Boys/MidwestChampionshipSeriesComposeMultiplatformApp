@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.boostyboys.mcs.data.api.models.Match
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.season.TeamWithResults
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 
@@ -49,15 +49,15 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-                match.teamOne?.let { team ->
-                    TeamRow(team)
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                match.teamTwo?.let { team ->
-                    TeamRow(team)
-                }
+//                match.teamOneId?.let { team ->
+//                    TeamRow(team)
+//                }
+//
+//                Spacer(modifier = Modifier.height(8.dp))
+//
+//                match.teamTwoId?.let { team ->
+//                    TeamRow(team)
+//                }
             }
 
             // divider
@@ -90,7 +90,7 @@ fun MatchCell(
 
 @Composable
 private fun TeamRow(
-    team: Team,
+    team: TeamWithResults,
 ) {
 //    val logo = rememberVectorPainter(team.avatar)
 
@@ -113,7 +113,7 @@ private fun TeamRow(
         )
 
         Text(
-            text = "${team.wins}-${team.losses}",
+            text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
             fontSize = 14.sp,
         )
 

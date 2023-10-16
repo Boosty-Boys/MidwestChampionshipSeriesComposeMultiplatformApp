@@ -31,7 +31,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.season.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
@@ -68,7 +68,7 @@ class StandingsScreen : Screen {
 
         MenuDialog(
             dialogShowingState = dialogState,
-            seasons = (viewState as? StandingsViewState.Content)?.seasons ?: emptyList(),
+            selectedLeagueId = (viewState as? StandingsViewState.Content)?.selectedLeague?.id ?: "",
             leagues = (viewState as? StandingsViewState.Content)?.leagues ?: emptyList(),
             onSeasonClicked = {
                 screenModel.handleAction(UpdateSelectedSeason(it))
@@ -115,7 +115,7 @@ class StandingsScreen : Screen {
 
                                 items(
                                     viewState.teams.sortedByDescending {
-                                        (it.wins.toDouble() / (it.wins + it.losses).toDouble())
+                                        (it.matchesWon.toDouble() / (it.matchesPlayed).toDouble())
                                     },
                                 ) { team ->
                                     TeamCell(
@@ -144,8 +144,8 @@ class StandingsScreen : Screen {
 
     @Composable
     private fun TeamCell(
-        team: Team,
-        onTeamClicked: (Team) -> Unit,
+        team: TeamWithResults,
+        onTeamClicked: (TeamWithResults) -> Unit,
     ) {
         Surface(
             modifier = Modifier
@@ -175,7 +175,7 @@ class StandingsScreen : Screen {
                     text = team.name,
                 )
 
-                Text(text = "${team.wins}-${team.losses}")
+                Text(text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}")
             }
         }
     }

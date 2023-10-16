@@ -1,24 +1,21 @@
 package com.boostyboys.mcs.data.api
 
 import com.boostyboys.mcs.data.api.either.Either
-import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Match
-import com.boostyboys.mcs.data.api.models.Season
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.player.Player
+import com.boostyboys.mcs.data.api.models.season.SeasonDataResponse
 
 interface McsRepository {
 
-    suspend fun getSeasons(): Either<List<Season>, Throwable>
+    suspend fun getLeagues(): Either<List<LeagueWithSeasons>, Throwable>
 
-    suspend fun getLeagues(seasonNumber: String): Either<List<League>, Throwable>
+    suspend fun getSeasonData(
+        seasonId: String,
+        teamIds: List<String>,
+    ): Either<SeasonDataResponse, Throwable>
 
-    suspend fun getTeams(
-        seasonNumber: String,
-        leagueId: String,
-    ): Either<List<Team>, Throwable>
-
-    suspend fun getMatches(
-        seasonNumber: String,
-        leagueId: String,
-    ): Either<List<Match>, Throwable>
+    suspend fun getPlayers(
+        teamId: String,
+        date: String,
+    ): Either<List<Player>, Throwable>
 }

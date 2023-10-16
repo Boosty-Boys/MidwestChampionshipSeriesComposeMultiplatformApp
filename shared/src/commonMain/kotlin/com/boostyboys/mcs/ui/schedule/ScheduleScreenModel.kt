@@ -5,8 +5,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
-import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Season
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.HandleMatchClicked
@@ -31,7 +31,7 @@ class ScheduleScreenModel(
         coroutineScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
-                    getSeasons()
+                    getLeagues()
                 }
                 is UpdateSelectedSeason -> {
                     updateSelectedSeason(action.season)
@@ -49,48 +49,36 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun getSeasons() {
-        when (val seasonsResult = mcsRepository.getSeasons()) {
-            is Either.Success -> {
-                val selectedSeason = seasonsResult.value.find {
-                    it.name == localRepository.selectedSeasonNumber
-                } ?: seasonsResult.value.firstOrNull()
-
-                if (selectedSeason != null) {
-                    updateState {
-                        copy(
-                            selectedSeason = selectedSeason,
-                            seasons = seasonsResult.value,
-                        )
-                    }
-                    getLeagues(selectedSeason)
-                } else {
-                    updateViewState { ScheduleViewState.Error() }
-                }
-            }
-            is Either.Failure -> {
-                updateViewState { ScheduleViewState.Error(seasonsResult.error.message) }
-            }
-        }
-    }
-
-    private suspend fun getLeagues(season: Season) {
-        when (val leaguesResult = mcsRepository.getLeagues(season.name)) {
+    private suspend fun getLeagues() {
+        when (val leaguesResult = mcsRepository.getLeagues()) {
             is Either.Success -> {
                 val selectedLeague = leaguesResult.value.find {
                     it.id == localRepository.selectedLeagueId
                 } ?: leaguesResult.value.firstOrNull()
 
                 if (selectedLeague != null) {
+                    localRepository.selectedLeagueId = selectedLeague.id
                     updateState {
                         copy(
-                            selectedLeague = selectedLeague,
                             leagues = leaguesResult.value,
                         )
                     }
-                    getTeamsAndMatches(season = season, league = selectedLeague)
                 } else {
-                    updateViewState { ScheduleViewState.Error() }
+                    updateViewState { ScheduleViewState.Error("Error finding leagues") }
+                    return
+                }
+
+                val selectedSeason = selectedLeague.seasons.find {
+                    it.name == localRepository.selectedSeasonNumber
+                } ?: selectedLeague.seasons.firstOrNull()
+
+                selectedSeason?.let { localRepository.selectedSeasonNumber = it.name }
+
+                if (selectedSeason != null) {
+                    localRepository.selectedSeasonNumber = selectedSeason.name
+                    getSeasonData(selectedSeason)
+                } else {
+                    updateViewState { ScheduleViewState.Error("Error finding season") }
                 }
             }
             is Either.Failure -> {
@@ -99,57 +87,59 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun getTeamsAndMatches(season: Season, league: League) {
+    private suspend fun getSeasonData(season: Season) {
         when (
-            val matchesResult = mcsRepository.getMatches(
-                seasonNumber = season.name,
-                leagueId = league.id,
+            val seasonDataResult = mcsRepository.getSeasonData(
+                seasonId = season.id,
+                teamIds = season.teamIds,
             )
         ) {
             is Either.Success -> {
-                // sort the matches into a map grouped by week and sorted by datetime
-                val matches = matchesResult.value
+                val matches = seasonDataResult.value.matches
                 val groupedMatches = matches.groupBy { it.week }
                 val sortedWeeks = groupedMatches.keys.sorted()
                 val sortedMatches = sortedWeeks.associateWith { week ->
-                    groupedMatches[week]?.sortedBy { it.dateTime } ?: emptyList()
+                    groupedMatches[week]?.sortedBy { it.scheduledDateTime } ?: emptyList()
                 }
 
-                val selectedWeek = state.value.selectedWeek ?: sortedWeeks.firstOrNull()
+                val selectedWeek = localRepository.selectedWeek ?: sortedWeeks.firstOrNull()
+                localRepository.selectedWeek = selectedWeek
 
                 updateState {
                     copy(
+                        teams = seasonDataResult.value.teams,
                         matchesByWeek = sortedMatches,
-                        selectedWeek = selectedWeek,
                     )
                 }
 
                 if (selectedWeek != null) {
-                    updateViewWithMatchesForWeek(selectedWeek, sortedWeeks)
+                    updateViewWithMatchesForWeek(selectedWeek)
                 } else {
-                    updateViewState { ScheduleViewState.Error() }
+                    updateViewState { ScheduleViewState.Error("Error finding weeks") }
                 }
             }
             is Either.Failure -> {
-                updateViewState { ScheduleViewState.Error(matchesResult.error.message) }
+                updateViewState { ScheduleViewState.Error(seasonDataResult.error.message) }
             }
         }
     }
 
-    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Int, weeks: List<Int>) {
+    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Int) {
         with(state.value) {
             val matches = matchesByWeek[selectedWeek]
+            val selectedLeague = leagues.find { it.id == localRepository.selectedLeagueId }
+            val selectedSeason = selectedLeague?.seasons?.find {
+                it.name == localRepository.selectedSeasonNumber
+            }
 
-            if (matches != null && selectedSeason != null && selectedLeague != null) {
+            if (matches != null && selectedLeague != null && selectedSeason != null) {
                 updateViewState {
                     ScheduleViewState.Content(
-                        selectedSeason = selectedSeason,
                         selectedLeague = selectedLeague,
+                        selectedSeason = selectedSeason,
                         selectedWeek = selectedWeek,
                         matches = matches,
-                        seasons = seasons,
                         leagues = leagues,
-                        weeks = weeks,
                     )
                 }
             } else {
@@ -158,21 +148,18 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun updateSelectedSeason(season: Season) {
+    private fun updateSelectedSeason(season: Season) {
         localRepository.selectedSeasonNumber = season.name
-        updateState { copy(selectedSeason = season) }
         handleAction(Initialize)
     }
 
-    private suspend fun updateSelectedLeague(league: League) {
+    private fun updateSelectedLeague(league: LeagueWithSeasons) {
         localRepository.selectedLeagueId = league.id
-        updateState { copy(selectedLeague = league) }
         handleAction(Initialize)
     }
 
-    private suspend fun updateSelectedWeek(week: Int) {
+    private fun updateSelectedWeek(week: Int) {
         localRepository.selectedWeek = week
-        updateState { copy(selectedWeek = week) }
         handleAction(Initialize)
     }
 }

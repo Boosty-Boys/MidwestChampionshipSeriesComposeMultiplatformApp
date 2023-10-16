@@ -24,7 +24,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.Match
+import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
@@ -34,7 +34,10 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.Initialize
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class ScheduleScreen : Screen {
 
@@ -64,9 +67,9 @@ class ScheduleScreen : Screen {
 
         MenuDialog(
             dialogShowingState = dialogState,
-            seasons = (viewState as? ScheduleViewState.Content)?.seasons ?: emptyList(),
+            selectedLeagueId = (viewState as? ScheduleViewState.Content)?.selectedLeague?.id ?: "",
             leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
-            weeks = (viewState as? ScheduleViewState.Content)?.weeks,
+            weeks = (viewState as? ScheduleViewState.Content)?.selectedSeason?.regularSeasonWeeks,
             onSeasonClicked = {
                 screenModel.handleAction(UpdateSelectedSeason(it))
             },
@@ -111,7 +114,9 @@ class ScheduleScreen : Screen {
                                     .padding(horizontal = 16.dp),
                             ) {
                                 val matchesByDay = viewState.matches.groupBy { match ->
-                                    match.dateTime.date
+                                    Instant.parse(match.scheduledDateTime ?: "").toLocalDateTime(
+                                        TimeZone.currentSystemDefault(),
+                                    ).date
                                 }
 
                                 items(matchesByDay.toList()) { (date, matches) ->
