@@ -142,7 +142,7 @@ class ScheduleScreen : Screen {
                             .padding(it)
                             .padding(horizontal = 16.dp),
                     ) {
-                        val matchesByDay = viewState.matches.groupBy { match ->
+                        val matchesByDay = viewState.matchesForWeek.groupBy { match ->
                             match.scheduledDateTime?.let { dateTime ->
                                 Instant.parse(dateTime).toLocalDateTime(
                                     TimeZone.currentSystemDefault(),

@@ -4,7 +4,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
-import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.season.Week
@@ -36,14 +35,14 @@ class ScheduleScreenModel(
     private val dispatcher: CoroutineDispatcher,
 ) : ScreenModel,
     StateHandler<ScheduleState, ScheduleViewState, ScheduleAction, ScheduleEffect>
-    by StateHandlerDelegate(ScheduleState(), ScheduleViewState.Loading) {
+    by StateHandlerDelegate(ScheduleState(null), ScheduleViewState.Loading) {
 
     override fun handleAction(action: ScheduleAction) {
         super.handleAction(action)
         coroutineScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
-                    getLeagues()
+                    collectLeagueSeasonConfig()
                 }
                 is UpdateSelectedSeason -> {
                     updateSelectedSeason(action.season)
@@ -61,120 +60,64 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun getLeagues() {
-        when (val leaguesResult = mcsRepository.getLeagues()) {
-            is Either.Success -> {
-                val selectedLeague = leaguesResult.value.find {
-                    it.id == localRepository.selectedLeagueId
-                } ?: leaguesResult.value.firstOrNull()
-
-                if (selectedLeague != null) {
-                    localRepository.selectedLeagueId = selectedLeague.id
-                    updateState {
-                        copy(
-                            leagues = leaguesResult.value,
-                        )
-                    }
-                } else {
-                    updateViewState { ScheduleViewState.Error("Error finding leagues") }
-                    return
-                }
-
-                val selectedSeason = selectedLeague.seasons.find {
-                    it.name == localRepository.selectedSeasonNumber
-                } ?: selectedLeague.seasons.firstOrNull()
-
-                selectedSeason?.let { localRepository.selectedSeasonNumber = it.name }
-
-                if (selectedSeason != null) {
-                    localRepository.selectedSeasonNumber = selectedSeason.name
-                    getSeasonData(selectedSeason)
-                } else {
-                    updateViewState { ScheduleViewState.Error("Error finding season") }
-                }
-            }
-            is Either.Failure -> {
-                updateViewState { ScheduleViewState.Error(leaguesResult.error.message) }
+    private suspend fun collectLeagueSeasonConfig() {
+        mcsRepository.leagueSeasonConfigFlow.collect {
+            if (it == null) {
+                updateViewState { ScheduleViewState.Loading }
+            } else {
+                updateState { copy(leagueSeasonConfig = it) }
+                updateViewWithSchedule()
             }
         }
     }
 
-    private suspend fun getSeasonData(season: Season) {
-        when (
-            val seasonDataResult = mcsRepository.getSeasonData(
-                seasonId = season.id,
-                teamIds = season.teamIds,
-            )
-        ) {
-            is Either.Success -> {
-                val matches = seasonDataResult.value.matches
-                val groupedMatches = matches.groupBy { Week(it.week) }
-                val sortedWeeks = groupedMatches.keys.sortedBy {
-                    it.value
-                }
-                val sortedMatches = sortedWeeks.associateWith { week ->
-                    groupedMatches[week]?.sortedBy { it.scheduledDateTime } ?: emptyList()
-                }
+    private suspend fun updateViewWithSchedule(week: Week? = null) {
+        state.value.leagueSeasonConfig?.let { config ->
+            val selectedWeek = week ?: localRepository.selectedWeek ?: Week(config.selectedLeague.currentWeek.toInt())
+            localRepository.selectedWeek = selectedWeek
 
-                val selectedWeek = localRepository.selectedWeek ?: sortedWeeks.firstOrNull()
-                localRepository.selectedWeek = selectedWeek
+            val matches = config.schedule[selectedWeek]
 
-                updateState {
-                    copy(
-                        teams = seasonDataResult.value.teams,
-                        matchesByWeek = sortedMatches,
-                    )
-                }
-
-                if (selectedWeek != null) {
-                    updateViewWithMatchesForWeek(selectedWeek)
-                } else {
-                    updateViewState { ScheduleViewState.Error("Error finding weeks") }
-                }
-            }
-            is Either.Failure -> {
-                updateViewState { ScheduleViewState.Error(seasonDataResult.error.message) }
-            }
-        }
-    }
-
-    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Week) {
-        with(state.value) {
-            val matches = matchesByWeek[selectedWeek]
-            val selectedLeague = leagues.find { it.id == localRepository.selectedLeagueId }
-            val selectedSeason = selectedLeague?.seasons?.find {
-                it.name == localRepository.selectedSeasonNumber
-            }
-
-            if (matches != null && selectedLeague != null && selectedSeason != null) {
+            if (matches != null) {
                 updateViewState {
                     ScheduleViewState.Content(
-                        selectedLeague = selectedLeague,
-                        selectedSeason = selectedSeason,
+                        selectedLeague = config.selectedLeague,
+                        selectedSeason = config.selectedSeason,
                         selectedWeek = selectedWeek,
-                        matches = matches,
-                        leagues = leagues,
-                        teams = teams,
+                        matchesForWeek = matches,
+                        leagues = config.leagues,
+                        teams = config.teams,
                     )
                 }
             } else {
                 updateViewState { ScheduleViewState.Error() }
             }
-        }
+        } ?: updateViewState { ScheduleViewState.Error() }
     }
 
     private fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonNumber = season.name
-        handleAction(Initialize)
+        localRepository.selectedSeasonId = season.id
+
+        coroutineScope.launch(dispatcher) {
+            mcsRepository.reloadLeagueSeasonConfig()
+        }
     }
 
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
-        localRepository.selectedLeagueId = league.id
-        handleAction(Initialize)
+        localRepository.selectedSeasonId = league.seasons.find {
+            it.id == league.currentSeasonId
+        }?.id ?: league.seasons.first().id
+
+        coroutineScope.launch(dispatcher) {
+            mcsRepository.reloadLeagueSeasonConfig()
+        }
     }
 
     private fun updateSelectedWeek(week: Week) {
         localRepository.selectedWeek = week
-        handleAction(Initialize)
+
+        coroutineScope.launch(dispatcher) {
+            updateViewWithSchedule(week)
+        }
     }
 }

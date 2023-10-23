@@ -5,7 +5,7 @@ import com.boostyboys.mcs.data.api.models.season.Week
 
 // TODO replace with real local preferences storage
 class LocalRepositoryImpl : LocalRepository {
-    override var selectedSeasonNumber: String? = null
+    override var selectedSeasonId: String? = null
     override var selectedLeagueId: String? = null
     override var selectedWeek: Week? = null
 }

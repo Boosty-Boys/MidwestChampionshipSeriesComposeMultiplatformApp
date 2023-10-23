@@ -65,7 +65,7 @@ class ScheduleScreenModelTest {
             seasons = defaultSeasonsList,
             leagues = defaultLeaguesList,
             weeks = defaultWeeksList,
-            matches = listOf(matchOne),
+            matchesForWeek = listOf(matchOne),
         )
 
         classUnderTest.viewState.test {

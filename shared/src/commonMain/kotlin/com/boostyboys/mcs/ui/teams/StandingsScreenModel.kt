@@ -65,13 +65,13 @@ class StandingsScreenModel(
                 }
 
                 val selectedSeason = selectedLeague.seasons.find {
-                    it.name == localRepository.selectedSeasonNumber
+                    it.name == localRepository.selectedSeasonId
                 } ?: selectedLeague.seasons.firstOrNull()
 
-                selectedSeason?.let { localRepository.selectedSeasonNumber = it.name }
+                selectedSeason?.let { localRepository.selectedSeasonId = it.name }
 
                 if (selectedSeason != null) {
-                    localRepository.selectedSeasonNumber = selectedSeason.name
+                    localRepository.selectedSeasonId = selectedSeason.name
                     getSeasonData(selectedSeason)
                 } else {
                     updateViewState { StandingsViewState.Error("Error finding season") }
@@ -96,7 +96,7 @@ class StandingsScreenModel(
                 with(state.value) {
                     val selectedLeague = leagues.find { it.id == localRepository.selectedLeagueId }
                     val selectedSeason = selectedLeague?.seasons?.find {
-                        it.name == localRepository.selectedSeasonNumber
+                        it.name == localRepository.selectedSeasonId
                     }
 
                     if (selectedLeague != null && selectedSeason != null) {
@@ -120,7 +120,7 @@ class StandingsScreenModel(
     }
 
     private fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonNumber = season.name
+        localRepository.selectedSeasonId = season.name
         handleAction(Initialize)
     }
 

@@ -1,6 +1,7 @@
 package com.boostyboys.mcs.ui.schedule
 
 import androidx.compose.runtime.Immutable
+import com.boostyboys.mcs.data.api.models.LeagueSeasonConfig
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.season.Season
@@ -8,9 +9,7 @@ import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 data class ScheduleState(
-    val leagues: List<LeagueWithSeasons> = emptyList(),
-    val teams: List<TeamWithResults> = emptyList(),
-    val matchesByWeek: Map<Week, List<Match>> = emptyMap(),
+    val leagueSeasonConfig: LeagueSeasonConfig?,
 )
 
 sealed interface ScheduleViewState {
@@ -22,7 +21,7 @@ sealed interface ScheduleViewState {
         val selectedLeague: LeagueWithSeasons,
         val selectedSeason: Season,
         val selectedWeek: Week,
-        val matches: List<Match>,
+        val matchesForWeek: List<Match>,
         val leagues: List<LeagueWithSeasons>,
         val teams: List<TeamWithResults>,
     ) : ScheduleViewState
