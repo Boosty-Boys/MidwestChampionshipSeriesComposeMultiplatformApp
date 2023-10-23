@@ -3,7 +3,7 @@ package com.boostyboys.mcs.ui.teams
 import androidx.compose.runtime.Immutable
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
-import com.boostyboys.mcs.data.api.models.season.TeamWithResults
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 data class StandingsState(
     val leagues: List<LeagueWithSeasons> = emptyList(),

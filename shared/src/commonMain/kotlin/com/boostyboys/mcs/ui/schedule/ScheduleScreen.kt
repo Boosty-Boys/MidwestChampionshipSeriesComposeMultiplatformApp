@@ -1,5 +1,7 @@
 package com.boostyboys.mcs.ui.schedule
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -14,9 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
@@ -24,7 +29,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
@@ -65,20 +73,48 @@ class ScheduleScreen : Screen {
             }
         }
 
+        when (viewState) {
+            is ScheduleViewState.Content -> ScheduleContent(
+                viewState = viewState,
+                dialogState = dialogState,
+                onSeasonClicked = {
+                    screenModel.handleAction(UpdateSelectedSeason(it))
+                },
+                onLeagueClicked = {
+                    screenModel.handleAction(UpdateSelectedLeague(it))
+                },
+                onWeekClicked = {
+                    screenModel.handleAction(UpdateSelectedWeek(it))
+                },
+                onMatchClicked = {
+                    screenModel.handleAction(
+                        ScheduleAction.HandleMatchClicked(it),
+                    )
+                },
+            )
+
+            is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
+            is ScheduleViewState.Loading -> ScheduleLoading()
+        }
+    }
+
+    @Composable
+    private fun ScheduleContent(
+        viewState: ScheduleViewState.Content,
+        dialogState: MutableState<Boolean>,
+        onSeasonClicked: (Season) -> Unit,
+        onLeagueClicked: (LeagueWithSeasons) -> Unit,
+        onWeekClicked: (Week) -> Unit,
+        onMatchClicked: (Match) -> Unit,
+    ) {
         MenuDialog(
             dialogShowingState = dialogState,
             selectedLeagueId = (viewState as? ScheduleViewState.Content)?.selectedLeague?.id ?: "",
             leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
             weeks = (viewState as? ScheduleViewState.Content)?.selectedSeason?.regularSeasonWeeks,
-            onSeasonClicked = {
-                screenModel.handleAction(UpdateSelectedSeason(it))
-            },
-            onLeagueClicked = {
-                screenModel.handleAction(UpdateSelectedLeague(it))
-            },
-            onWeekClicked = {
-                screenModel.handleAction(UpdateSelectedWeek(it))
-            },
+            onSeasonClicked = onSeasonClicked,
+            onLeagueClicked = onLeagueClicked,
+            onWeekClicked = onWeekClicked,
         )
 
         Surface(
@@ -88,10 +124,8 @@ class ScheduleScreen : Screen {
                 topBar = {
                     McsToolbar(
                         title = McsStrings.SCHEDULE,
-                        subtitle = (viewState as? ScheduleViewState.Content)?.let {
-                            "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
-                                "${McsStrings.WEEK} ${viewState.selectedWeek}"
-                        },
+                        subtitle = "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
+                            "${McsStrings.WEEK} ${viewState.selectedWeek.value}",
                         actionIconOptions = ActionIconOptions(
                             icon = Icons.Default.Menu,
                             contentDescription = McsStrings.MENU,
@@ -102,51 +136,57 @@ class ScheduleScreen : Screen {
                     )
                 },
                 content = {
-                    when (viewState) {
-                        is ScheduleViewState.Loading -> {
-                            Text("loading...")
-                        }
-                        is ScheduleViewState.Content -> {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(it)
-                                    .padding(horizontal = 16.dp),
-                            ) {
-                                val matchesByDay = viewState.matches.groupBy { match ->
-                                    match.scheduledDateTime?.let { dateTime ->
-                                        Instant.parse(dateTime).toLocalDateTime(
-                                            TimeZone.currentSystemDefault(),
-                                        ).date
-                                    }
-                                }
-
-                                items(matchesByDay.toList()) { (date, matches) ->
-                                    MatchDayBlock(
-                                        date = date,
-                                        matches = matches,
-                                        onMatchClicked = { match ->
-                                            screenModel.handleAction(ScheduleAction.HandleMatchClicked(match))
-                                        },
-                                    )
-                                }
-
-                                item {
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it)
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        val matchesByDay = viewState.matches.groupBy { match ->
+                            match.scheduledDateTime?.let { dateTime ->
+                                Instant.parse(dateTime).toLocalDateTime(
+                                    TimeZone.currentSystemDefault(),
+                                ).date
                             }
                         }
-                        is ScheduleViewState.Error -> {
-                            Column {
-                                Text("error :(")
-                                viewState.errorMessage?.let { error ->
-                                    Text(error)
-                                }
-                            }
+
+                        items(matchesByDay.toList()) { (date, matches) ->
+                            MatchDayBlock(
+                                date = date,
+                                matches = matches,
+                                onMatchClicked = onMatchClicked,
+                            )
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(24.dp))
                         }
                     }
                 },
             )
+        }
+    }
+
+    @Composable
+    private fun ScheduleLoading() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
+    @Composable
+    private fun ScheduleError(errorMessage: String?) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text("error :(")
+            errorMessage?.let { error ->
+                Text(error)
+            }
         }
     }
 

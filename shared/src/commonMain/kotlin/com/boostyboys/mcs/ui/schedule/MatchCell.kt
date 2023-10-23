@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.api.models.match.Match
-import com.boostyboys.mcs.data.api.models.season.TeamWithResults
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 

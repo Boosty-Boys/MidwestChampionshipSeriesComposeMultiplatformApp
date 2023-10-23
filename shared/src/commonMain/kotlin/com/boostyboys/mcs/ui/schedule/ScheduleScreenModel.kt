@@ -7,6 +7,7 @@ import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.HandleMatchClicked
@@ -16,7 +17,18 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
 import com.boostyboys.mcs.ui.schedule.ScheduleEffect.NavigateToMatchDetails
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+class FlowRepository {
+    private val _testFlow: MutableStateFlow<String> = MutableStateFlow("")
+    val testFlow: StateFlow<String> get() = _testFlow
+
+    suspend fun reload() {
+        _testFlow.emit("test")
+    }
+}
 
 class ScheduleScreenModel(
     private val localRepository: LocalRepository,
@@ -96,8 +108,10 @@ class ScheduleScreenModel(
         ) {
             is Either.Success -> {
                 val matches = seasonDataResult.value.matches
-                val groupedMatches = matches.groupBy { it.week }
-                val sortedWeeks = groupedMatches.keys.sorted()
+                val groupedMatches = matches.groupBy { Week(it.week) }
+                val sortedWeeks = groupedMatches.keys.sortedBy {
+                    it.value
+                }
                 val sortedMatches = sortedWeeks.associateWith { week ->
                     groupedMatches[week]?.sortedBy { it.scheduledDateTime } ?: emptyList()
                 }
@@ -124,7 +138,7 @@ class ScheduleScreenModel(
         }
     }
 
-    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Int) {
+    private suspend fun updateViewWithMatchesForWeek(selectedWeek: Week) {
         with(state.value) {
             val matches = matchesByWeek[selectedWeek]
             val selectedLeague = leagues.find { it.id == localRepository.selectedLeagueId }
@@ -140,6 +154,7 @@ class ScheduleScreenModel(
                         selectedWeek = selectedWeek,
                         matches = matches,
                         leagues = leagues,
+                        teams = teams,
                     )
                 }
             } else {
@@ -158,7 +173,7 @@ class ScheduleScreenModel(
         handleAction(Initialize)
     }
 
-    private fun updateSelectedWeek(week: Int) {
+    private fun updateSelectedWeek(week: Week) {
         localRepository.selectedWeek = week
         handleAction(Initialize)
     }

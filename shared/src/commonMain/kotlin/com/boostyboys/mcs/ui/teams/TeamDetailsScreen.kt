@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.season.TeamWithResults
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 
 data class TeamDetailsScreen(val team: TeamWithResults) : Screen {

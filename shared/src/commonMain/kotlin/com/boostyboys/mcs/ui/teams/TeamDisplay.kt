@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.season.TeamWithResults
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 @Composable
 fun TeamDisplay(

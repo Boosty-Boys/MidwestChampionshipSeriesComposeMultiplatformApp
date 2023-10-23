@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.data.api.models.season
+package com.boostyboys.mcs.data.api.models.team
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

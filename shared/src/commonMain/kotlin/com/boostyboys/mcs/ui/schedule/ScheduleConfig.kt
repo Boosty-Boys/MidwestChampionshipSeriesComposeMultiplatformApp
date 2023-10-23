@@ -4,12 +4,13 @@ import androidx.compose.runtime.Immutable
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.season.Season
-import com.boostyboys.mcs.data.api.models.season.TeamWithResults
+import com.boostyboys.mcs.data.api.models.season.Week
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 data class ScheduleState(
     val leagues: List<LeagueWithSeasons> = emptyList(),
     val teams: List<TeamWithResults> = emptyList(),
-    val matchesByWeek: Map<Int, List<Match>> = emptyMap(),
+    val matchesByWeek: Map<Week, List<Match>> = emptyMap(),
 )
 
 sealed interface ScheduleViewState {
@@ -20,7 +21,7 @@ sealed interface ScheduleViewState {
     data class Content(
         val selectedLeague: LeagueWithSeasons,
         val selectedSeason: Season,
-        val selectedWeek: Int,
+        val selectedWeek: Week,
         val matches: List<Match>,
         val leagues: List<LeagueWithSeasons>,
         val teams: List<TeamWithResults>,
@@ -34,7 +35,7 @@ sealed interface ScheduleAction {
     data object Initialize : ScheduleAction
     data class UpdateSelectedSeason(val season: Season) : ScheduleAction
     data class UpdateSelectedLeague(val league: LeagueWithSeasons) : ScheduleAction
-    data class UpdateSelectedWeek(val week: Int) : ScheduleAction
+    data class UpdateSelectedWeek(val week: Week) : ScheduleAction
     data class HandleMatchClicked(val match: Match) : ScheduleAction
 }
 
