@@ -84,6 +84,7 @@ class ScheduleScreen : Screen {
         }
 
         when (viewState) {
+            is ScheduleViewState.Loading -> ScheduleLoading()
             is ScheduleViewState.Content -> ScheduleContent(
                 viewState = viewState,
                 dialogState = dialogState,
@@ -106,9 +107,7 @@ class ScheduleScreen : Screen {
                     )
                 },
             )
-
             is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
-            is ScheduleViewState.Loading -> ScheduleLoading()
         }
     }
 

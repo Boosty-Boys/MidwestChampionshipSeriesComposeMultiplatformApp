@@ -1,13 +1,13 @@
 package com.boostyboys.mcs.ui.teams
 
 import androidx.compose.runtime.Immutable
+import com.boostyboys.mcs.data.api.models.LeagueSeasonConfig
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 data class StandingsState(
-    val leagues: List<LeagueWithSeasons> = emptyList(),
-    val teams: List<TeamWithResults> = emptyList(),
+    val leagueSeasonConfig: LeagueSeasonConfig?,
 )
 
 sealed interface StandingsViewState {
@@ -18,8 +18,8 @@ sealed interface StandingsViewState {
     data class Content(
         val selectedLeague: LeagueWithSeasons,
         val selectedSeason: Season,
-        val teams: List<TeamWithResults>,
         val leagues: List<LeagueWithSeasons>,
+        val teams: List<TeamWithResults>,
     ) : StandingsViewState
 
     @Immutable

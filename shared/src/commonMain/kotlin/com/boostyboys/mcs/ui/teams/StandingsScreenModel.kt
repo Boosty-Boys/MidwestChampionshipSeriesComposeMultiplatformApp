@@ -7,8 +7,10 @@ import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
+import com.boostyboys.mcs.ui.schedule.ScheduleViewState
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
 import com.boostyboys.mcs.ui.teams.StandingsAction.Initialize
 import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedLeague
@@ -23,14 +25,14 @@ class StandingsScreenModel(
     private val dispatcher: CoroutineDispatcher,
 ) : ScreenModel,
     StateHandler<StandingsState, StandingsViewState, StandingsAction, StandingsEffect>
-    by StateHandlerDelegate(StandingsState(), StandingsViewState.Loading) {
+    by StateHandlerDelegate(StandingsState(null), StandingsViewState.Loading) {
 
     override fun handleAction(action: StandingsAction) {
         super.handleAction(action)
         coroutineScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
-                    getLeagues()
+                    collectLeagueSeasonConfig()
                 }
                 is UpdateSelectedSeason -> {
                     updateSelectedSeason(action.season)
@@ -45,87 +47,45 @@ class StandingsScreenModel(
         }
     }
 
-    private suspend fun getLeagues() {
-        when (val leaguesResult = mcsRepository.getLeagues()) {
-            is Either.Success -> {
-                val selectedLeague = leaguesResult.value.find {
-                    it.id == localRepository.selectedLeagueId
-                } ?: leaguesResult.value.firstOrNull()
-
-                if (selectedLeague != null) {
-                    localRepository.selectedLeagueId = selectedLeague.id
-                    updateState {
-                        copy(
-                            leagues = leaguesResult.value,
-                        )
-                    }
-                } else {
-                    updateViewState { StandingsViewState.Error("Error finding leagues") }
-                    return
-                }
-
-                val selectedSeason = selectedLeague.seasons.find {
-                    it.name == localRepository.selectedSeasonId
-                } ?: selectedLeague.seasons.firstOrNull()
-
-                selectedSeason?.let { localRepository.selectedSeasonId = it.name }
-
-                if (selectedSeason != null) {
-                    localRepository.selectedSeasonId = selectedSeason.name
-                    getSeasonData(selectedSeason)
-                } else {
-                    updateViewState { StandingsViewState.Error("Error finding season") }
-                }
-            }
-            is Either.Failure -> {
-                updateViewState { StandingsViewState.Error(leaguesResult.error.message) }
+    private suspend fun collectLeagueSeasonConfig() {
+        mcsRepository.leagueSeasonConfigFlow.collect {
+            if (it == null) {
+                updateViewState { StandingsViewState.Loading }
+            } else {
+                updateState { copy(leagueSeasonConfig = it) }
+                updateViewWithStandings()
             }
         }
     }
 
-    private suspend fun getSeasonData(season: Season) {
-        when (
-            val seasonDataResult = mcsRepository.getSeasonData(
-                seasonId = season.id,
-                teamIds = season.teamIds,
-            )
-        ) {
-            is Either.Success -> {
-                updateState { copy(teams = seasonDataResult.value.teams) }
-
-                with(state.value) {
-                    val selectedLeague = leagues.find { it.id == localRepository.selectedLeagueId }
-                    val selectedSeason = selectedLeague?.seasons?.find {
-                        it.name == localRepository.selectedSeasonId
-                    }
-
-                    if (selectedLeague != null && selectedSeason != null) {
-                        updateViewState {
-                            StandingsViewState.Content(
-                                selectedLeague = selectedLeague,
-                                selectedSeason = selectedSeason,
-                                teams = teams,
-                                leagues = leagues,
-                            )
-                        }
-                    } else {
-                        updateViewState { StandingsViewState.Error() }
-                    }
-                }
+    private suspend fun updateViewWithStandings() {
+        state.value.leagueSeasonConfig?.let { config ->
+            updateViewState {
+                StandingsViewState.Content(
+                    selectedLeague = config.selectedLeague,
+                    selectedSeason = config.selectedSeason,
+                    leagues = config.leagues,
+                    teams = config.teams,
+                )
             }
-            is Either.Failure -> {
-                updateViewState { StandingsViewState.Error(seasonDataResult.error.message) }
-            }
-        }
+        } ?: updateViewState { StandingsViewState.Error() }
     }
 
     private fun updateSelectedSeason(season: Season) {
-        localRepository.selectedSeasonId = season.name
-        handleAction(Initialize)
+        localRepository.selectedSeasonId = season.id
+
+        coroutineScope.launch(dispatcher) {
+            mcsRepository.reloadLeagueSeasonConfig()
+        }
     }
 
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
-        localRepository.selectedLeagueId = league.id
-        handleAction(Initialize)
+        localRepository.selectedSeasonId = league.seasons.find {
+            it.id == league.currentSeasonId
+        }?.id ?: league.seasons.first().id
+
+        coroutineScope.launch(dispatcher) {
+            mcsRepository.reloadLeagueSeasonConfig()
+        }
     }
 }
