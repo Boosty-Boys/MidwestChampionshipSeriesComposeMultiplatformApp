@@ -44,12 +44,9 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
 import com.boostyboys.mcs.util.format
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class ScheduleScreen : Screen {
 
@@ -157,9 +154,7 @@ class ScheduleScreen : Screen {
                     ) {
                         val matchesByDay = viewState.matchesForWeek.groupBy { match ->
                             match.scheduledDateTime?.let { dateTime ->
-                                Instant.parse(dateTime).toLocalDateTime(
-                                    TimeZone.currentSystemDefault(),
-                                ).date
+                                dateTime.date
                             }
                         }
 

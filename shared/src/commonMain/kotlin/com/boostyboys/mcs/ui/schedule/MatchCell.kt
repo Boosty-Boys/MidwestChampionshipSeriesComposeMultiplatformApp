@@ -24,9 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.util.format
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 
@@ -85,11 +82,7 @@ fun MatchCell(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                val matchDayTime = match.scheduledDateTime?.let { dateTime ->
-                    Instant.parse(dateTime).toLocalDateTime(
-                        TimeZone.currentSystemDefault(),
-                    )
-                }
+                val matchDayTime = match.scheduledDateTime
 
                 val time = matchDayTime?.format("h:mm a")
 
