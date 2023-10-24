@@ -33,6 +33,7 @@ import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.season.Week
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
@@ -42,8 +43,11 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.Initialize
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
+import com.boostyboys.mcs.util.format
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -154,6 +158,7 @@ class ScheduleScreen : Screen {
                             MatchDayBlock(
                                 date = date,
                                 matches = matches,
+                                teams = viewState.teams,
                                 onMatchClicked = onMatchClicked,
                             )
                         }
@@ -194,19 +199,27 @@ class ScheduleScreen : Screen {
     private fun MatchDayBlock(
         date: LocalDate?,
         matches: List<Match>,
+        teams: List<TeamWithResults>,
         onMatchClicked: (Match) -> Unit,
     ) {
-        val dateText = "${date?.monthNumber}/${date?.dayOfMonth}/${date?.year}"
+        val dateText = date?.let {
+            LocalDateTime(date, LocalTime(0, 0)).format("eeee MMM dd, yyyy")
+        }
 
         Column {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(dateText)
-            Spacer(modifier = Modifier.height(8.dp))
+
+            dateText?.let {
+                Text(it)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             matches.forEach { match ->
                 MatchCell(
                     modifier = Modifier.padding(vertical = 8.dp),
                     match = match,
+                    teamOne = teams.find { it.id == match.teamOneId },
+                    teamTwo = teams.find { it.id == match.teamTwoId },
                     onClick = onMatchClicked,
                 )
             }

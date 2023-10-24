@@ -16,18 +16,7 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
 import com.boostyboys.mcs.ui.schedule.ScheduleEffect.NavigateToMatchDetails
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-class FlowRepository {
-    private val _testFlow: MutableStateFlow<String> = MutableStateFlow("")
-    val testFlow: StateFlow<String> get() = _testFlow
-
-    suspend fun reload() {
-        _testFlow.emit("test")
-    }
-}
 
 class ScheduleScreenModel(
     private val localRepository: LocalRepository,

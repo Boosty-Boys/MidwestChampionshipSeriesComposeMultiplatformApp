@@ -23,6 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
+import com.boostyboys.mcs.util.format
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 
@@ -30,6 +34,8 @@ private const val TEAM_COLUMN_WEIGHT = 6f
 fun MatchCell(
     modifier: Modifier = Modifier,
     match: Match,
+    teamOne: TeamWithResults?,
+    teamTwo: TeamWithResults?,
     onClick: (Match) -> Unit,
 ) {
     Surface(
@@ -49,15 +55,15 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-//                match.teamOneId?.let { team ->
-//                    TeamRow(team)
-//                }
-//
-//                Spacer(modifier = Modifier.height(8.dp))
-//
-//                match.teamTwoId?.let { team ->
-//                    TeamRow(team)
-//                }
+                teamOne?.let { team ->
+                    TeamRow(team)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                teamTwo?.let { team ->
+                    TeamRow(team)
+                }
             }
 
             // divider
@@ -79,8 +85,16 @@ fun MatchCell(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
+                val matchDayTime = match.scheduledDateTime?.let { dateTime ->
+                    Instant.parse(dateTime).toLocalDateTime(
+                        TimeZone.currentSystemDefault(),
+                    )
+                }
+
+                val time = matchDayTime?.format("h:mm a")
+
                 Text(
-                    text = "todo",
+                    text = time ?: "",
                     fontSize = 12.sp,
                 )
             }

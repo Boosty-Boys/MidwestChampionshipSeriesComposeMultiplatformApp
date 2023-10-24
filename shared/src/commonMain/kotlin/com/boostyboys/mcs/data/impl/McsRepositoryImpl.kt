@@ -23,6 +23,8 @@ class McsRepositoryImpl(
         get() = _leagueSeasonsConfigFlow
 
     override suspend fun reloadLeagueSeasonConfig() {
+        _leagueSeasonsConfigFlow.emit(null)
+
         val leagues: List<LeagueWithSeasons> = when (val leaguesResponse = mcsManager.getLeagues()) {
             is Either.Success -> {
                 leaguesResponse.value.ifEmpty {
@@ -35,7 +37,9 @@ class McsRepositoryImpl(
         }
 
         val leagueToSelect = leagues.find { it.id == localRepository.selectedLeagueId } ?: leagues.first()
-        val seasonToSelect = leagueToSelect.seasons.find { it.id == localRepository.selectedSeasonId } ?: leagueToSelect.seasons.first()
+        val seasonToSelect = leagueToSelect.seasons.find { it.id == localRepository.selectedSeasonId }
+            ?: leagueToSelect.seasons.find { it.id == leagueToSelect.currentSeasonId }
+            ?: leagueToSelect.seasons.first()
 
         val seasonData: SeasonDataResponse = when (
             val seasonDataResponse = mcsManager.getSeasonData(
