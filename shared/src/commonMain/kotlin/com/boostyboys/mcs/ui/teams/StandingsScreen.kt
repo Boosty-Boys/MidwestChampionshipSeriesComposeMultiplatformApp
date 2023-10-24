@@ -1,6 +1,8 @@
 package com.boostyboys.mcs.ui.teams
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,12 +35,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
+import com.boostyboys.mcs.ui.teams.StandingsAction.Initialize
 import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedLeague
 import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedSeason
 
@@ -52,7 +59,7 @@ class StandingsScreen : Screen {
 
         LifecycleEffect(
             onStarted = {
-                screenModel.handleAction(StandingsAction.Initialize)
+                screenModel.handleAction(Initialize)
             },
         )
 
@@ -66,16 +73,39 @@ class StandingsScreen : Screen {
             }
         }
 
+        when (viewState) {
+            is StandingsViewState.Loading -> StandingsLoading()
+            is StandingsViewState.Content -> StandingsContent(
+                viewState = viewState,
+                dialogState = dialogState,
+                onSeasonClicked = { season ->
+                    screenModel.handleAction(UpdateSelectedSeason(season))
+                },
+                onLeagueClicked = { league ->
+                    screenModel.handleAction(UpdateSelectedLeague(league))
+                },
+                onTeamClicked = { team ->
+                    screenModel.handleAction(HandleTeamClicked(team))
+                },
+            )
+            is StandingsViewState.Error -> StandingsError(errorMessage = viewState.errorMessage)
+        }
+    }
+
+    @Composable
+    private fun StandingsContent(
+        viewState: StandingsViewState.Content,
+        dialogState: MutableState<Boolean>,
+        onSeasonClicked: (Season) -> Unit,
+        onLeagueClicked: (LeagueWithSeasons) -> Unit,
+        onTeamClicked: (TeamWithResults) -> Unit,
+    ) {
         MenuDialog(
             dialogShowingState = dialogState,
-            seasons = (viewState as? StandingsViewState.Content)?.seasons ?: emptyList(),
+            selectedLeagueId = (viewState as? StandingsViewState.Content)?.selectedLeague?.id ?: "",
             leagues = (viewState as? StandingsViewState.Content)?.leagues ?: emptyList(),
-            onSeasonClicked = {
-                screenModel.handleAction(UpdateSelectedSeason(it))
-            },
-            onLeagueClicked = {
-                screenModel.handleAction(UpdateSelectedLeague(it))
-            },
+            onSeasonClicked = onSeasonClicked,
+            onLeagueClicked = onLeagueClicked,
         )
 
         Surface(
@@ -98,43 +128,26 @@ class StandingsScreen : Screen {
                     )
                 },
                 content = { paddingValues ->
-                    when (viewState) {
-                        is StandingsViewState.Loading -> {
-                            Text("loading...")
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
-                        is StandingsViewState.Content -> {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(paddingValues)
-                                    .padding(horizontal = 16.dp),
-                            ) {
-                                item {
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
 
-                                items(
-                                    viewState.teams.sortedByDescending {
-                                        (it.wins.toDouble() / (it.wins + it.losses).toDouble())
-                                    },
-                                ) { team ->
-                                    TeamCell(
-                                        team = team,
-                                        onTeamClicked = {
-                                            screenModel.handleAction(HandleTeamClicked(it))
-                                        },
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                            }
-                        }
-                        is StandingsViewState.Error -> {
-                            Column {
-                                Text("error :(")
-                                viewState.errorMessage?.let { error ->
-                                    Text(error)
-                                }
-                            }
+                        items(
+                            viewState.teams.sortedByDescending {
+                                (it.matchesWon.toDouble() / (it.matchesPlayed).toDouble())
+                            },
+                        ) { team ->
+                            TeamCell(
+                                team = team,
+                                onTeamClicked = onTeamClicked,
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 },
@@ -144,8 +157,8 @@ class StandingsScreen : Screen {
 
     @Composable
     private fun TeamCell(
-        team: Team,
-        onTeamClicked: (Team) -> Unit,
+        team: TeamWithResults,
+        onTeamClicked: (TeamWithResults) -> Unit,
     ) {
         Surface(
             modifier = Modifier
@@ -175,7 +188,30 @@ class StandingsScreen : Screen {
                     text = team.name,
                 )
 
-                Text(text = "${team.wins}-${team.losses}")
+                Text(text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}")
+            }
+        }
+    }
+
+    @Composable
+    private fun StandingsLoading() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
+    @Composable
+    private fun StandingsError(errorMessage: String?) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text("error :(")
+            errorMessage?.let { error ->
+                Text(error)
             }
         }
     }

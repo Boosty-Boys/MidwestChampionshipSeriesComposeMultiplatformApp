@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.data.api.models
+package com.boostyboys.mcs.data.api.models.season
 
 import kotlin.jvm.JvmInline
 

@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 @Composable
 fun TeamDisplay(
-    team: Team,
+    team: TeamWithResults,
 ) {
     val navigator = LocalNavigator.currentOrThrow
 //    val logo = rememberVectorPainter(team.avatar)

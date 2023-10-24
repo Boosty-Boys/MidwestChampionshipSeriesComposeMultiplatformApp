@@ -29,10 +29,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Match
-import com.boostyboys.mcs.data.api.models.Season
-import com.boostyboys.mcs.data.api.models.Week
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
@@ -42,7 +43,13 @@ import com.boostyboys.mcs.ui.schedule.ScheduleAction.Initialize
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedLeague
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedSeason
 import com.boostyboys.mcs.ui.schedule.ScheduleAction.UpdateSelectedWeek
+import com.boostyboys.mcs.util.format
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class ScheduleScreen : Screen {
 
@@ -64,13 +71,20 @@ class ScheduleScreen : Screen {
             screenModel.effect.collect { effect ->
                 when (effect) {
                     is ScheduleEffect.NavigateToMatchDetails -> {
-                        navigator.push(MatchDetailsScreen(effect.match))
+                        navigator.push(
+                            MatchDetailsScreen(
+                                match = effect.match,
+                                teamOne = effect.teamOne,
+                                teamTwo = effect.teamTwo,
+                            ),
+                        )
                     }
                 }
             }
         }
 
         when (viewState) {
+            is ScheduleViewState.Loading -> ScheduleLoading()
             is ScheduleViewState.Content -> ScheduleContent(
                 viewState = viewState,
                 dialogState = dialogState,
@@ -83,15 +97,17 @@ class ScheduleScreen : Screen {
                 onWeekClicked = {
                     screenModel.handleAction(UpdateSelectedWeek(it))
                 },
-                onMatchClicked = {
+                onMatchClicked = { match, teamOne, teamTwo ->
                     screenModel.handleAction(
-                        ScheduleAction.HandleMatchClicked(it),
+                        ScheduleAction.HandleMatchClicked(
+                            match = match,
+                            teamOne = teamOne,
+                            teamTwo = teamTwo,
+                        ),
                     )
                 },
             )
-
             is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
-            is ScheduleViewState.Loading -> ScheduleLoading()
         }
     }
 
@@ -100,15 +116,15 @@ class ScheduleScreen : Screen {
         viewState: ScheduleViewState.Content,
         dialogState: MutableState<Boolean>,
         onSeasonClicked: (Season) -> Unit,
-        onLeagueClicked: (League) -> Unit,
+        onLeagueClicked: (LeagueWithSeasons) -> Unit,
         onWeekClicked: (Week) -> Unit,
-        onMatchClicked: (Match) -> Unit,
+        onMatchClicked: (Match, TeamWithResults?, TeamWithResults?) -> Unit,
     ) {
         MenuDialog(
             dialogShowingState = dialogState,
-            seasons = viewState.seasons,
-            leagues = viewState.leagues,
-            weeks = viewState.weeks,
+            selectedLeagueId = (viewState as? ScheduleViewState.Content)?.selectedLeague?.id ?: "",
+            leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
+            weeks = (viewState as? ScheduleViewState.Content)?.selectedSeason?.regularSeasonWeeks,
             onSeasonClicked = onSeasonClicked,
             onLeagueClicked = onLeagueClicked,
             onWeekClicked = onWeekClicked,
@@ -139,14 +155,19 @@ class ScheduleScreen : Screen {
                             .padding(it)
                             .padding(horizontal = 16.dp),
                     ) {
-                        val matchesByDay = viewState.matches.groupBy { match ->
-                            match.dateTime.date
+                        val matchesByDay = viewState.matchesForWeek.groupBy { match ->
+                            match.scheduledDateTime?.let { dateTime ->
+                                Instant.parse(dateTime).toLocalDateTime(
+                                    TimeZone.currentSystemDefault(),
+                                ).date
+                            }
                         }
 
                         items(matchesByDay.toList()) { (date, matches) ->
                             MatchDayBlock(
                                 date = date,
                                 matches = matches,
+                                teams = viewState.teams,
                                 onMatchClicked = onMatchClicked,
                             )
                         }
@@ -185,22 +206,35 @@ class ScheduleScreen : Screen {
 
     @Composable
     private fun MatchDayBlock(
-        date: LocalDate,
+        date: LocalDate?,
         matches: List<Match>,
-        onMatchClicked: (Match) -> Unit,
+        teams: List<TeamWithResults>,
+        onMatchClicked: (Match, TeamWithResults?, TeamWithResults?) -> Unit,
     ) {
-        val dateText = "${date.monthNumber}/${date.dayOfMonth}/${date.year}"
+        val dateText = date?.let {
+            LocalDateTime(date, LocalTime(0, 0)).format("eeee MMM dd, yyyy")
+        }
 
         Column {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(dateText)
-            Spacer(modifier = Modifier.height(8.dp))
+
+            dateText?.let {
+                Text(it)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             matches.forEach { match ->
+                val teamOne = teams.find { it.id == match.teamOneId }
+                val teamTwo = teams.find { it.id == match.teamTwoId }
+
                 MatchCell(
                     modifier = Modifier.padding(vertical = 8.dp),
                     match = match,
-                    onClick = onMatchClicked,
+                    teamOne = teams.find { it.id == match.teamOneId },
+                    teamTwo = teams.find { it.id == match.teamTwoId },
+                    onClick = {
+                        onMatchClicked(match, teamOne, teamTwo)
+                    },
                 )
             }
         }

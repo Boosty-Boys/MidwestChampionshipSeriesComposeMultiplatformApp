@@ -1,18 +1,15 @@
 package com.boostyboys.mcs.ui.schedule
 
 import androidx.compose.runtime.Immutable
-import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Match
-import com.boostyboys.mcs.data.api.models.Season
-import com.boostyboys.mcs.data.api.models.Week
+import com.boostyboys.mcs.data.api.models.LeagueSeasonConfig
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 
 data class ScheduleState(
-    val selectedSeason: Season? = null,
-    val selectedLeague: League? = null,
-    val selectedWeek: Week? = null,
-    val seasons: List<Season> = emptyList(),
-    val leagues: List<League> = emptyList(),
-    val matchesByWeek: Map<Week, List<Match>> = emptyMap(),
+    val leagueSeasonConfig: LeagueSeasonConfig?,
 )
 
 sealed interface ScheduleViewState {
@@ -21,13 +18,12 @@ sealed interface ScheduleViewState {
 
     @Immutable
     data class Content(
+        val selectedLeague: LeagueWithSeasons,
         val selectedSeason: Season,
-        val selectedLeague: League,
         val selectedWeek: Week,
-        val seasons: List<Season>,
-        val leagues: List<League>,
-        val weeks: List<Week>,
-        val matches: List<Match>,
+        val matchesForWeek: List<Match>,
+        val leagues: List<LeagueWithSeasons>,
+        val teams: List<TeamWithResults>,
     ) : ScheduleViewState
 
     @Immutable
@@ -37,11 +33,19 @@ sealed interface ScheduleViewState {
 sealed interface ScheduleAction {
     data object Initialize : ScheduleAction
     data class UpdateSelectedSeason(val season: Season) : ScheduleAction
-    data class UpdateSelectedLeague(val league: League) : ScheduleAction
+    data class UpdateSelectedLeague(val league: LeagueWithSeasons) : ScheduleAction
     data class UpdateSelectedWeek(val week: Week) : ScheduleAction
-    data class HandleMatchClicked(val match: Match) : ScheduleAction
+    data class HandleMatchClicked(
+        val match: Match,
+        val teamOne: TeamWithResults?,
+        val teamTwo: TeamWithResults?,
+    ) : ScheduleAction
 }
 
 sealed interface ScheduleEffect {
-    data class NavigateToMatchDetails(val match: Match) : ScheduleEffect
+    data class NavigateToMatchDetails(
+        val match: Match,
+        val teamOne: TeamWithResults?,
+        val teamTwo: TeamWithResults?,
+    ) : ScheduleEffect
 }

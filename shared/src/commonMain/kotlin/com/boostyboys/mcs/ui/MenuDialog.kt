@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.boostyboys.mcs.data.api.models.League
-import com.boostyboys.mcs.data.api.models.Season
-import com.boostyboys.mcs.data.api.models.Week
+import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
+import com.boostyboys.mcs.data.api.models.season.Season
+import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.ui.MenuDialogConfig.LEAGUE_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.MENU_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.SEASON_SELECTION
@@ -29,11 +29,11 @@ import com.boostyboys.mcs.ui.MenuDialogConfig.WEEK_SELECTION
 @Composable
 fun MenuDialog(
     dialogShowingState: MutableState<Boolean>,
-    seasons: List<Season>,
-    leagues: List<League>,
+    selectedLeagueId: String,
+    leagues: List<LeagueWithSeasons>,
     onSeasonClicked: (Season) -> Unit,
-    onLeagueClicked: (League) -> Unit,
-    weeks: List<Week>? = null,
+    onLeagueClicked: (LeagueWithSeasons) -> Unit,
+    weeks: Int? = null,
     onWeekClicked: ((Week) -> Unit)? = null,
 ) {
     val configState = remember {
@@ -54,7 +54,14 @@ fun MenuDialog(
                                 MenuSelection(configState, weeks != null)
                             }
                             SEASON_SELECTION -> {
-                                SeasonSelection(configState, dialogShowingState, seasons, onSeasonClicked)
+                                SeasonSelection(
+                                    configState = configState,
+                                    dialogShowingState = dialogShowingState,
+                                    seasons = leagues.find {
+                                        selectedLeagueId == it.id
+                                    }?.seasons ?: emptyList(),
+                                    onSeasonClicked = onSeasonClicked,
+                                )
                             }
                             LEAGUE_SELECTION -> {
                                 LeagueSelection(configState, dialogShowingState, leagues, onLeagueClicked)
@@ -139,8 +146,8 @@ private fun SeasonSelection(
 private fun LeagueSelection(
     configState: MutableState<MenuDialogConfig>,
     dialogShowingState: MutableState<Boolean>,
-    leagues: List<League>,
-    onLeagueClicked: (League) -> Unit,
+    leagues: List<LeagueWithSeasons>,
+    onLeagueClicked: (LeagueWithSeasons) -> Unit,
 ) {
     Column {
         leagues.forEach {
@@ -163,18 +170,18 @@ private fun LeagueSelection(
 private fun WeekSelection(
     configState: MutableState<MenuDialogConfig>,
     dialogShowingState: MutableState<Boolean>,
-    weeks: List<Week>,
+    weeks: Int,
     onWeekClicked: (Week) -> Unit,
 ) {
     Column {
-        weeks.forEach {
+        for (week in 1..weeks) {
             Text(
                 modifier = Modifier.clickable {
-                    onWeekClicked(it)
+                    onWeekClicked(Week(week))
                     dialogShowingState.value = false
                     configState.value = MENU_SELECTION
                 },
-                text = "${McsStrings.WEEK} ${it.value}",
+                text = "${McsStrings.WEEK} $week",
                 fontSize = 18.sp,
             )
 

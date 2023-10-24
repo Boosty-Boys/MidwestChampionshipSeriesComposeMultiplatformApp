@@ -21,8 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.boostyboys.mcs.data.api.models.Match
-import com.boostyboys.mcs.data.api.models.Team
+import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
+import com.boostyboys.mcs.util.format
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 private const val TEAM_COLUMN_WEIGHT = 6f
 
@@ -30,6 +34,8 @@ private const val TEAM_COLUMN_WEIGHT = 6f
 fun MatchCell(
     modifier: Modifier = Modifier,
     match: Match,
+    teamOne: TeamWithResults?,
+    teamTwo: TeamWithResults?,
     onClick: (Match) -> Unit,
 ) {
     Surface(
@@ -49,13 +55,13 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-                match.teamOne?.let { team ->
+                teamOne?.let { team ->
                     TeamRow(team)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                match.teamTwo?.let { team ->
+                teamTwo?.let { team ->
                     TeamRow(team)
                 }
             }
@@ -79,8 +85,16 @@ fun MatchCell(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
+                val matchDayTime = match.scheduledDateTime?.let { dateTime ->
+                    Instant.parse(dateTime).toLocalDateTime(
+                        TimeZone.currentSystemDefault(),
+                    )
+                }
+
+                val time = matchDayTime?.format("h:mm a")
+
                 Text(
-                    text = "todo",
+                    text = time ?: "",
                     fontSize = 12.sp,
                 )
             }
@@ -90,7 +104,7 @@ fun MatchCell(
 
 @Composable
 private fun TeamRow(
-    team: Team,
+    team: TeamWithResults,
 ) {
 //    val logo = rememberVectorPainter(team.avatar)
 
@@ -113,7 +127,7 @@ private fun TeamRow(
         )
 
         Text(
-            text = "${team.wins}-${team.losses}",
+            text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
             fontSize = 14.sp,
         )
 

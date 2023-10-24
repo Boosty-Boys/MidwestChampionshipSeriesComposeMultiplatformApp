@@ -6,6 +6,7 @@ import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.impl.LocalRepositoryImpl
 import com.boostyboys.mcs.data.impl.McsRepositoryImpl
+import com.boostyboys.mcs.main.MainScreenModel
 import com.boostyboys.mcs.networking.api.McsManager
 import com.boostyboys.mcs.networking.impl.McsManagerImpl
 import com.boostyboys.mcs.ui.schedule.ScheduleScreenModel
@@ -17,7 +18,8 @@ import org.koin.dsl.module
 val appModule = module {
     single<LocalRepository> { LocalRepositoryImpl() }
     single<McsManager> { McsManagerImpl() }
-    single<McsRepository> { McsRepositoryImpl(get()) }
+    single<McsRepository> { McsRepositoryImpl(get(), get()) }
+    factory { MainScreenModel(get(), get(IoDispatcher)) }
     factory { ScheduleScreenModel(get(), get(), get(IoDispatcher)) }
     factory { StandingsScreenModel(get(), get(), get(IoDispatcher)) }
 }
