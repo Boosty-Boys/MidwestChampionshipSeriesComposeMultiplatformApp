@@ -35,9 +35,17 @@ sealed interface ScheduleAction {
     data class UpdateSelectedSeason(val season: Season) : ScheduleAction
     data class UpdateSelectedLeague(val league: LeagueWithSeasons) : ScheduleAction
     data class UpdateSelectedWeek(val week: Week) : ScheduleAction
-    data class HandleMatchClicked(val match: Match) : ScheduleAction
+    data class HandleMatchClicked(
+        val match: Match,
+        val teamOne: TeamWithResults?,
+        val teamTwo: TeamWithResults?,
+    ) : ScheduleAction
 }
 
 sealed interface ScheduleEffect {
-    data class NavigateToMatchDetails(val match: Match) : ScheduleEffect
+    data class NavigateToMatchDetails(
+        val match: Match,
+        val teamOne: TeamWithResults?,
+        val teamTwo: TeamWithResults?,
+    ) : ScheduleEffect
 }

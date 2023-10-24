@@ -19,10 +19,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.match.Match
+import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.McsToolbar
+import com.boostyboys.mcs.ui.teams.TeamDisplay
 
 data class MatchDetailsScreen(
     val match: Match,
+    val teamOne: TeamWithResults?,
+    val teamTwo: TeamWithResults?,
 ) : Screen {
 
     @Composable
@@ -55,14 +59,14 @@ data class MatchDetailsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            match.teamOneId?.let { team ->
-//                                TeamDisplay(team)
+                            teamOne?.let { team ->
+                                TeamDisplay(team)
                             }
 
                             Text("vs")
 
-                            match.teamTwoId?.let { team ->
-//                                TeamDisplay(team)
+                            teamTwo?.let { team ->
+                                TeamDisplay(team)
                             }
                         }
                     }

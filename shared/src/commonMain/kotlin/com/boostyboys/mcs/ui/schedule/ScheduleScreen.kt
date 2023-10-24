@@ -71,7 +71,13 @@ class ScheduleScreen : Screen {
             screenModel.effect.collect { effect ->
                 when (effect) {
                     is ScheduleEffect.NavigateToMatchDetails -> {
-                        navigator.push(MatchDetailsScreen(effect.match))
+                        navigator.push(
+                            MatchDetailsScreen(
+                                match = effect.match,
+                                teamOne = effect.teamOne,
+                                teamTwo = effect.teamTwo,
+                            ),
+                        )
                     }
                 }
             }
@@ -90,9 +96,13 @@ class ScheduleScreen : Screen {
                 onWeekClicked = {
                     screenModel.handleAction(UpdateSelectedWeek(it))
                 },
-                onMatchClicked = {
+                onMatchClicked = { match, teamOne, teamTwo ->
                     screenModel.handleAction(
-                        ScheduleAction.HandleMatchClicked(it),
+                        ScheduleAction.HandleMatchClicked(
+                            match = match,
+                            teamOne = teamOne,
+                            teamTwo = teamTwo,
+                        ),
                     )
                 },
             )
@@ -109,7 +119,7 @@ class ScheduleScreen : Screen {
         onSeasonClicked: (Season) -> Unit,
         onLeagueClicked: (LeagueWithSeasons) -> Unit,
         onWeekClicked: (Week) -> Unit,
-        onMatchClicked: (Match) -> Unit,
+        onMatchClicked: (Match, TeamWithResults?, TeamWithResults?) -> Unit,
     ) {
         MenuDialog(
             dialogShowingState = dialogState,
@@ -200,7 +210,7 @@ class ScheduleScreen : Screen {
         date: LocalDate?,
         matches: List<Match>,
         teams: List<TeamWithResults>,
-        onMatchClicked: (Match) -> Unit,
+        onMatchClicked: (Match, TeamWithResults?, TeamWithResults?) -> Unit,
     ) {
         val dateText = date?.let {
             LocalDateTime(date, LocalTime(0, 0)).format("eeee MMM dd, yyyy")
@@ -215,12 +225,17 @@ class ScheduleScreen : Screen {
             }
 
             matches.forEach { match ->
+                val teamOne = teams.find { it.id == match.teamOneId }
+                val teamTwo = teams.find { it.id == match.teamTwoId }
+
                 MatchCell(
                     modifier = Modifier.padding(vertical = 8.dp),
                     match = match,
                     teamOne = teams.find { it.id == match.teamOneId },
                     teamTwo = teams.find { it.id == match.teamTwoId },
-                    onClick = onMatchClicked,
+                    onClick = {
+                        onMatchClicked(match, teamOne, teamTwo)
+                    },
                 )
             }
         }

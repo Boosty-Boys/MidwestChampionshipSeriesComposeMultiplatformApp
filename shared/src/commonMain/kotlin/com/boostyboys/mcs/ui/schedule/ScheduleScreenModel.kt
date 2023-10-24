@@ -43,7 +43,13 @@ class ScheduleScreenModel(
                     updateSelectedWeek(action.week)
                 }
                 is HandleMatchClicked -> {
-                    emitEffect(NavigateToMatchDetails(action.match))
+                    emitEffect(
+                        NavigateToMatchDetails(
+                            action.match,
+                            action.teamOne,
+                            action.teamTwo,
+                        ),
+                    )
                 }
             }
         }
