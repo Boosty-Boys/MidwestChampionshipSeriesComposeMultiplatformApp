@@ -216,5 +216,3 @@ class StandingsScreen : Screen {
         }
     }
 }
-
-

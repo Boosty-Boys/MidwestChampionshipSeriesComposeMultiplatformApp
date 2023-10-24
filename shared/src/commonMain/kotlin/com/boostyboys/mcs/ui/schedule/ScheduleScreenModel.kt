@@ -99,9 +99,7 @@ class ScheduleScreenModel(
     }
 
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
-        localRepository.selectedSeasonId = league.seasons.find {
-            it.id == league.currentSeasonId
-        }?.id ?: league.seasons.first().id
+        localRepository.selectedLeagueId = league.id
 
         coroutineScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()

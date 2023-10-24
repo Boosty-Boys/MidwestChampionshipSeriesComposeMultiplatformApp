@@ -4,13 +4,10 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
-import com.boostyboys.mcs.data.api.either.Either
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
-import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
-import com.boostyboys.mcs.ui.schedule.ScheduleViewState
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
 import com.boostyboys.mcs.ui.teams.StandingsAction.Initialize
 import com.boostyboys.mcs.ui.teams.StandingsAction.UpdateSelectedLeague
@@ -80,9 +77,7 @@ class StandingsScreenModel(
     }
 
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
-        localRepository.selectedSeasonId = league.seasons.find {
-            it.id == league.currentSeasonId
-        }?.id ?: league.seasons.first().id
+        localRepository.selectedLeagueId = league.id
 
         coroutineScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()

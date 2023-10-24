@@ -174,14 +174,14 @@ private fun WeekSelection(
     onWeekClicked: (Week) -> Unit,
 ) {
     Column {
-        (1..weeks).forEach {
+        for (week in 1..weeks) {
             Text(
                 modifier = Modifier.clickable {
-                    onWeekClicked(Week(it))
+                    onWeekClicked(Week(week))
                     dialogShowingState.value = false
                     configState.value = MENU_SELECTION
                 },
-                text = "${McsStrings.WEEK} $it",
+                text = "${McsStrings.WEEK} $week",
                 fontSize = 18.sp,
             )
 

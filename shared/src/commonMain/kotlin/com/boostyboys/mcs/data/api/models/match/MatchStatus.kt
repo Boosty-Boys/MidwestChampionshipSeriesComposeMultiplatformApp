@@ -37,7 +37,8 @@ abstract class EnumIgnoreUnknownSerializer<T : Enum<T>>(values: Array<out T>, pr
     KSerializer<T> {
     // Alternative to taking values in param, take clazz: Class<T>
     // - private val values = clazz.enumConstants
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(values.first()::class.qualifiedName!!, PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor(values.first()::class.qualifiedName!!, PrimitiveKind.STRING)
 
     // Build maps for faster parsing, used @SerialName annotation if present, fall back to name
     private val lookup = values.associateBy({ it }, { it.serialName })
