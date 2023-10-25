@@ -37,7 +37,6 @@ import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
-import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
@@ -54,62 +53,60 @@ class ScheduleScreen : Screen {
 
     @Composable
     override fun Content() {
-        AppTheme {
-            val navigator = LocalNavigator.currentOrThrow
-            val screenModel = getScreenModel<ScheduleScreenModel>()
-            val viewState = screenModel.viewState.collectAsState().value
+        val navigator = LocalNavigator.currentOrThrow
+        val screenModel = getScreenModel<ScheduleScreenModel>()
+        val viewState = screenModel.viewState.collectAsState().value
 
-            val dialogState = remember { mutableStateOf(false) }
+        val dialogState = remember { mutableStateOf(false) }
 
-            LifecycleEffect(
-                onStarted = {
-                    screenModel.handleAction(Initialize)
-                },
-            )
+        LifecycleEffect(
+            onStarted = {
+                screenModel.handleAction(Initialize)
+            },
+        )
 
-            LaunchedEffect(screenModel) {
-                screenModel.effect.collect { effect ->
-                    when (effect) {
-                        is ScheduleEffect.NavigateToMatchDetails -> {
-                            navigator.push(
-                                MatchDetailsScreen(
-                                    match = effect.match,
-                                    teamOne = effect.teamOne,
-                                    teamTwo = effect.teamTwo,
-                                ),
-                            )
-                        }
+        LaunchedEffect(screenModel) {
+            screenModel.effect.collect { effect ->
+                when (effect) {
+                    is ScheduleEffect.NavigateToMatchDetails -> {
+                        navigator.push(
+                            MatchDetailsScreen(
+                                match = effect.match,
+                                teamOne = effect.teamOne,
+                                teamTwo = effect.teamTwo,
+                            ),
+                        )
                     }
                 }
             }
+        }
 
-            when (viewState) {
-                is ScheduleViewState.Loading -> ScheduleLoading()
-                is ScheduleViewState.Content -> ScheduleContent(
-                    viewState = viewState,
-                    dialogState = dialogState,
-                    onSeasonClicked = {
-                        screenModel.handleAction(UpdateSelectedSeason(it))
-                    },
-                    onLeagueClicked = {
-                        screenModel.handleAction(UpdateSelectedLeague(it))
-                    },
-                    onWeekClicked = {
-                        screenModel.handleAction(UpdateSelectedWeek(it))
-                    },
-                    onMatchClicked = { match, teamOne, teamTwo ->
-                        screenModel.handleAction(
-                            ScheduleAction.HandleMatchClicked(
-                                match = match,
-                                teamOne = teamOne,
-                                teamTwo = teamTwo,
-                            ),
-                        )
-                    },
-                )
+        when (viewState) {
+            is ScheduleViewState.Loading -> ScheduleLoading()
+            is ScheduleViewState.Content -> ScheduleContent(
+                viewState = viewState,
+                dialogState = dialogState,
+                onSeasonClicked = {
+                    screenModel.handleAction(UpdateSelectedSeason(it))
+                },
+                onLeagueClicked = {
+                    screenModel.handleAction(UpdateSelectedLeague(it))
+                },
+                onWeekClicked = {
+                    screenModel.handleAction(UpdateSelectedWeek(it))
+                },
+                onMatchClicked = { match, teamOne, teamTwo ->
+                    screenModel.handleAction(
+                        ScheduleAction.HandleMatchClicked(
+                            match = match,
+                            teamOne = teamOne,
+                            teamTwo = teamTwo,
+                        ),
+                    )
+                },
+            )
 
-                is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
-            }
+            is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
         }
     }
 

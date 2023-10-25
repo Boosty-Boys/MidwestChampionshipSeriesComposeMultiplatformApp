@@ -41,7 +41,6 @@ import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
 import com.boostyboys.mcs.designsystem.components.TeamLogo
-import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
@@ -75,25 +74,23 @@ class StandingsScreen : Screen {
             }
         }
 
-        AppTheme {
-            when (viewState) {
-                is StandingsViewState.Loading -> StandingsLoading()
-                is StandingsViewState.Content -> StandingsContent(
-                    viewState = viewState,
-                    dialogState = dialogState,
-                    onSeasonClicked = { season ->
-                        screenModel.handleAction(UpdateSelectedSeason(season))
-                    },
-                    onLeagueClicked = { league ->
-                        screenModel.handleAction(UpdateSelectedLeague(league))
-                    },
-                    onTeamClicked = { team ->
-                        screenModel.handleAction(HandleTeamClicked(team))
-                    },
-                )
+        when (viewState) {
+            is StandingsViewState.Loading -> StandingsLoading()
+            is StandingsViewState.Content -> StandingsContent(
+                viewState = viewState,
+                dialogState = dialogState,
+                onSeasonClicked = { season ->
+                    screenModel.handleAction(UpdateSelectedSeason(season))
+                },
+                onLeagueClicked = { league ->
+                    screenModel.handleAction(UpdateSelectedLeague(league))
+                },
+                onTeamClicked = { team ->
+                    screenModel.handleAction(HandleTeamClicked(team))
+                },
+            )
 
-                is StandingsViewState.Error -> StandingsError(errorMessage = viewState.errorMessage)
-            }
+            is StandingsViewState.Error -> StandingsError(errorMessage = viewState.errorMessage)
         }
     }
 

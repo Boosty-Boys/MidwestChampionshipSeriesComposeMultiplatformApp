@@ -24,7 +24,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.McsToolbar
-import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.teams.TeamDisplay
 
 data class MatchDetailsScreen(
@@ -37,50 +36,48 @@ data class MatchDetailsScreen(
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        AppTheme {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Scaffold(
-                    topBar = {
-                        McsToolbar(
-                            title = "Match Details",
-                            onBackClicked = {
-                                navigator.pop()
-                            },
-                        )
-                    },
-                    content = {
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(it),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Scaffold(
+                topBar = {
+                    McsToolbar(
+                        title = "Match Details",
+                        onBackClicked = {
+                            navigator.pop()
+                        },
+                    )
+                },
+                content = {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(it),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Spacer(modifier = Modifier.height(24.dp))
+                            TeamDisplayOrSpace(teamOne)
 
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                TeamDisplayOrSpace(teamOne)
+                            Text(
+                                modifier = Modifier.weight(VS_WEIGHT),
+                                text = "vs",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                            )
 
-                                Text(
-                                    modifier = Modifier.weight(VS_WEIGHT),
-                                    text = "vs",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    textAlign = TextAlign.Center,
-                                )
-
-                                TeamDisplayOrSpace(teamTwo)
-                            }
+                            TeamDisplayOrSpace(teamTwo)
                         }
-                    },
-                )
-            }
+                    }
+                },
+            )
         }
     }
 

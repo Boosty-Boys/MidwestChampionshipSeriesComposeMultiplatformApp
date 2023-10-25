@@ -18,7 +18,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.McsToolbar
-import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.McsStrings
 
 data class TeamDetailsScreen(val team: TeamWithResults) : Screen {
@@ -27,39 +26,37 @@ data class TeamDetailsScreen(val team: TeamWithResults) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        AppTheme {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Scaffold(
-                    topBar = {
-                        McsToolbar(
-                            title = McsStrings.TEAM_DETAILS,
-                            onBackClicked = {
-                                navigator.pop()
-                            },
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Scaffold(
+                topBar = {
+                    McsToolbar(
+                        title = McsStrings.TEAM_DETAILS,
+                        onBackClicked = {
+                            navigator.pop()
+                        },
+                    )
+                },
+                content = {
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(modifier = Modifier.height(64.dp))
+
+                        TeamDisplay(team)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
-                    },
-                    content = {
-                        Column(
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Spacer(modifier = Modifier.height(64.dp))
 
-                            TeamDisplay(team)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-
-                            Spacer(modifier = Modifier.height(40.dp))
-                        }
-                    },
-                )
-            }
+                        Spacer(modifier = Modifier.height(40.dp))
+                    }
+                },
+            )
         }
     }
 }
