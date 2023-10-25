@@ -15,7 +15,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.bottomnavigation.McsBottomNavigation
 import com.boostyboys.mcs.ui.bottomnavigation.ScheduleTab
 
@@ -32,35 +31,33 @@ class MainScreen : Screen {
             },
         )
 
-        AppTheme {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                when (viewState) {
-                    is MainViewState.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            when (viewState) {
+                is MainViewState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
                     }
+                }
 
-                    is MainViewState.Content -> {
-                        TabNavigator(
-                            tab = ScheduleTab, // initial tab to show
-                        ) {
-                            Scaffold(
-                                content = {
-                                    Box(modifier = Modifier.padding(it)) {
-                                        CurrentTab()
-                                    }
-                                },
-                                bottomBar = {
-                                    McsBottomNavigation()
-                                },
-                            )
-                        }
+                is MainViewState.Content -> {
+                    TabNavigator(
+                        tab = ScheduleTab, // initial tab to show
+                    ) {
+                        Scaffold(
+                            content = {
+                                Box(modifier = Modifier.padding(it)) {
+                                    CurrentTab()
+                                }
+                            },
+                            bottomBar = {
+                                McsBottomNavigation()
+                            },
+                        )
                     }
                 }
             }
