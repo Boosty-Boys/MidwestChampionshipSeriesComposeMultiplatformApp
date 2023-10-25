@@ -71,3 +71,4 @@ playground.xcworkspace
 *.xcuserstate
 
 fastlane/report.xml
+iosApp/Pods/Pods.xcodeproj/xcuserdata/*
