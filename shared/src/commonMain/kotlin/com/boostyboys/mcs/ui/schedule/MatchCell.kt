@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
@@ -42,8 +43,9 @@ fun MatchCell(
             .clickable {
                 onClick(match)
             },
-        color = MaterialTheme.colorScheme.surfaceVariant,
         shape = MaterialTheme.shapes.large,
+        tonalElevation = 8.dp,
+        shadowElevation = 8.dp,
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -73,7 +75,7 @@ fun MatchCell(
                         .width(1.dp)
                         .fillMaxHeight()
                         .padding(vertical = 4.dp)
-                        .background(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                        .background(color = MaterialTheme.colorScheme.onSurface),
                 )
             }
 
@@ -89,7 +91,7 @@ fun MatchCell(
                 Text(
                     text = time ?: "",
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -115,15 +117,18 @@ private fun TeamRow(
             modifier = Modifier.weight(1f),
             text = team.name,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
 
         Text(
             text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(6.dp))
     }
 }

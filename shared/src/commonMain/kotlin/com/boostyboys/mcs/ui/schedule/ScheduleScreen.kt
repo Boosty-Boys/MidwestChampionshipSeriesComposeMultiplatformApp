@@ -124,9 +124,9 @@ class ScheduleScreen : Screen {
     ) {
         MenuDialog(
             dialogShowingState = dialogState,
-            selectedLeagueId = (viewState as? ScheduleViewState.Content)?.selectedLeague?.id ?: "",
-            leagues = (viewState as? ScheduleViewState.Content)?.leagues ?: emptyList(),
-            weeks = (viewState as? ScheduleViewState.Content)?.selectedSeason?.regularSeasonWeeks,
+            selectedLeagueId = viewState.selectedLeague.id,
+            leagues = viewState.leagues,
+            weeks = viewState.selectedSeason.regularSeasonWeeks,
             onSeasonClicked = onSeasonClicked,
             onLeagueClicked = onLeagueClicked,
             onWeekClicked = onWeekClicked,
@@ -222,7 +222,7 @@ class ScheduleScreen : Screen {
         }
 
         Column {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             dateText?.let {
                 Text(

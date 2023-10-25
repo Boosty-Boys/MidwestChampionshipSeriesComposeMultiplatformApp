@@ -1,12 +1,11 @@
 package com.boostyboys.mcs.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -45,14 +44,14 @@ fun MenuDialog(
                 configState.value = MENU_SELECTION
             },
             content = {
-                Box(
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            shape = MaterialTheme.shapes.extraLarge,
-                        ),
+                        .padding(16.dp),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp,
+                    shadowElevation = 8.dp,
                 ) {
                     when (configState.value) {
                         MENU_SELECTION -> {
@@ -103,7 +102,7 @@ private fun MenuSelection(
                 },
             text = "Select Season",
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Text(
@@ -115,7 +114,7 @@ private fun MenuSelection(
                 },
             text = "Select League",
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         if (showWeeks) {
@@ -128,7 +127,7 @@ private fun MenuSelection(
                     },
                 text = "Select Week",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -158,7 +157,7 @@ private fun SeasonSelection(
                     },
                 text = "Season ${it.name}",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -188,7 +187,7 @@ private fun LeagueSelection(
                     },
                 text = it.name,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -218,7 +217,7 @@ private fun WeekSelection(
                     },
                 text = "${McsStrings.WEEK} $week",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
