@@ -1,21 +1,19 @@
 package com.boostyboys.mcs.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
@@ -47,29 +45,35 @@ fun MenuDialog(
                 configState.value = MENU_SELECTION
             },
             content = {
-                Surface {
-                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                        when (configState.value) {
-                            MENU_SELECTION -> {
-                                MenuSelection(configState, weeks != null)
-                            }
-                            SEASON_SELECTION -> {
-                                SeasonSelection(
-                                    configState = configState,
-                                    dialogShowingState = dialogShowingState,
-                                    seasons = leagues.find {
-                                        selectedLeagueId == it.id
-                                    }?.seasons ?: emptyList(),
-                                    onSeasonClicked = onSeasonClicked,
-                                )
-                            }
-                            LEAGUE_SELECTION -> {
-                                LeagueSelection(configState, dialogShowingState, leagues, onLeagueClicked)
-                            }
-                            WEEK_SELECTION -> {
-                                if (weeks != null && onWeekClicked != null) {
-                                    WeekSelection(configState, dialogShowingState, weeks, onWeekClicked)
-                                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            shape = MaterialTheme.shapes.extraLarge,
+                        ),
+                ) {
+                    when (configState.value) {
+                        MENU_SELECTION -> {
+                            MenuSelection(configState, weeks != null)
+                        }
+                        SEASON_SELECTION -> {
+                            SeasonSelection(
+                                configState = configState,
+                                dialogShowingState = dialogShowingState,
+                                seasons = leagues.find {
+                                    selectedLeagueId == it.id
+                                }?.seasons ?: emptyList(),
+                                onSeasonClicked = onSeasonClicked,
+                            )
+                        }
+                        LEAGUE_SELECTION -> {
+                            LeagueSelection(configState, dialogShowingState, leagues, onLeagueClicked)
+                        }
+                        WEEK_SELECTION -> {
+                            if (weeks != null && onWeekClicked != null) {
+                                WeekSelection(configState, dialogShowingState, weeks, onWeekClicked)
                             }
                         }
                     }
@@ -85,34 +89,46 @@ private fun MenuSelection(
     configState: MutableState<MenuDialogConfig>,
     showWeeks: Boolean,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
         Text(
-            modifier = Modifier.clickable {
-                configState.value = SEASON_SELECTION
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .clickable {
+                    configState.value = SEASON_SELECTION
+                },
             text = "Select Season",
-            fontSize = 18.sp,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
-            modifier = Modifier.clickable {
-                configState.value = LEAGUE_SELECTION
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .clickable {
+                    configState.value = LEAGUE_SELECTION
+                },
             text = "Select League",
-            fontSize = 18.sp,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
 
         if (showWeeks) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
-                modifier = Modifier.clickable {
-                    configState.value = WEEK_SELECTION
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable {
+                        configState.value = WEEK_SELECTION
+                    },
                 text = "Select Week",
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
         }
     }
@@ -125,19 +141,25 @@ private fun SeasonSelection(
     seasons: List<Season>,
     onSeasonClicked: (Season) -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
         seasons.forEach {
             Text(
-                modifier = Modifier.clickable {
-                    onSeasonClicked(it)
-                    dialogShowingState.value = false
-                    configState.value = MENU_SELECTION
-                },
-                text = it.name,
-                fontSize = 18.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable {
+                        onSeasonClicked(it)
+                        dialogShowingState.value = false
+                        configState.value = MENU_SELECTION
+                    },
+                text = "Season ${it.name}",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -149,19 +171,25 @@ private fun LeagueSelection(
     leagues: List<LeagueWithSeasons>,
     onLeagueClicked: (LeagueWithSeasons) -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
         leagues.forEach {
             Text(
-                modifier = Modifier.clickable {
-                    onLeagueClicked(it)
-                    dialogShowingState.value = false
-                    configState.value = MENU_SELECTION
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable {
+                        onLeagueClicked(it)
+                        dialogShowingState.value = false
+                        configState.value = MENU_SELECTION
+                    },
                 text = it.name,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -173,19 +201,25 @@ private fun WeekSelection(
     weeks: Int,
     onWeekClicked: (Week) -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
         for (week in 1..weeks) {
             Text(
-                modifier = Modifier.clickable {
-                    onWeekClicked(Week(week))
-                    dialogShowingState.value = false
-                    configState.value = MENU_SELECTION
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable {
+                        onWeekClicked(Week(week))
+                        dialogShowingState.value = false
+                        configState.value = MENU_SELECTION
+                    },
                 text = "${McsStrings.WEEK} $week",
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

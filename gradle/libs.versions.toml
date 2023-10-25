@@ -14,6 +14,10 @@ compose = "1.5.1"
 mokoResources = "0.22.2"
 turbine = "0.12.2"
 coroutines = "1.7.3"
+activityCompose = "1.8.0"
+appcompat = "1.6.1"
+coreKtx = "1.12.0"
+kamel = "0.8.2"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -25,6 +29,10 @@ detekt-gradlePlugins = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }

@@ -5,37 +5,51 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
+import com.boostyboys.mcs.designsystem.components.TeamLogo
 
 @Composable
 fun TeamDisplay(
     team: TeamWithResults,
+    modifier: Modifier = Modifier,
+    canNavigateToDetails: Boolean = false,
 ) {
     val navigator = LocalNavigator.currentOrThrow
-//    val logo = rememberVectorPainter(team.avatar)
+    val localModifier = if (canNavigateToDetails) {
+        modifier.clickable {
+            navigator.push(TeamDetailsScreen(team))
+        }
+    } else {
+        modifier
+    }
 
     Column(
-        modifier = Modifier.clickable {
-            navigator.push(TeamDetailsScreen(team))
-        },
+        modifier = localModifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-//        Icon(
-//            modifier = Modifier.size(32.dp),
-//            painter = logo,
-//            contentDescription = null,
-//        )
+        TeamLogo(
+            modifier = Modifier.size(96.dp),
+            logoUrl = team.avatar,
+        )
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Text(text = team.name)
+        Text(
+            text = team.name,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
     }
 }
