@@ -2,26 +2,28 @@ package com.boostyboys.mcs.designsystem.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.ui.McsStrings
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun McsToolbar(
     modifier: Modifier = Modifier,
@@ -33,10 +35,8 @@ fun McsToolbar(
     TopAppBar(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        content = {
-            // back button if it exists, otherwise use a spacer
+            .height(64.dp),
+        navigationIcon = {
             if (onBackClicked != null) {
                 val iconBack = rememberVectorPainter(Icons.Default.ArrowBack)
                 IconButton(
@@ -48,32 +48,14 @@ fun McsToolbar(
                     Icon(
                         painter = iconBack,
                         contentDescription = McsStrings.GO_BACK,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.size(64.dp))
+                Spacer(modifier = Modifier.width(64.dp))
             }
-
-            // toolbar title and subtitle
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                )
-
-                subtitle?.let {
-                    Text(
-                        text = it,
-                        fontSize = 12.sp,
-                    )
-                }
-            }
-
-            // action button if it exists, otherwise use a spacer
+        },
+        actions = {
             if (actionIconOptions != null) {
                 val iconAction = rememberVectorPainter(actionIconOptions.icon)
                 IconButton(
@@ -83,10 +65,37 @@ fun McsToolbar(
                     Icon(
                         painter = iconAction,
                         contentDescription = actionIconOptions.contentDescription,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.size(64.dp))
+                Spacer(modifier = Modifier.width(64.dp))
+            }
+        },
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                subtitle?.let {
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
         },
     )

@@ -10,16 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -28,7 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.Screen
@@ -40,6 +40,8 @@ import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
+import com.boostyboys.mcs.designsystem.components.TeamLogo
+import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
@@ -73,22 +75,25 @@ class StandingsScreen : Screen {
             }
         }
 
-        when (viewState) {
-            is StandingsViewState.Loading -> StandingsLoading()
-            is StandingsViewState.Content -> StandingsContent(
-                viewState = viewState,
-                dialogState = dialogState,
-                onSeasonClicked = { season ->
-                    screenModel.handleAction(UpdateSelectedSeason(season))
-                },
-                onLeagueClicked = { league ->
-                    screenModel.handleAction(UpdateSelectedLeague(league))
-                },
-                onTeamClicked = { team ->
-                    screenModel.handleAction(HandleTeamClicked(team))
-                },
-            )
-            is StandingsViewState.Error -> StandingsError(errorMessage = viewState.errorMessage)
+        AppTheme {
+            when (viewState) {
+                is StandingsViewState.Loading -> StandingsLoading()
+                is StandingsViewState.Content -> StandingsContent(
+                    viewState = viewState,
+                    dialogState = dialogState,
+                    onSeasonClicked = { season ->
+                        screenModel.handleAction(UpdateSelectedSeason(season))
+                    },
+                    onLeagueClicked = { league ->
+                        screenModel.handleAction(UpdateSelectedLeague(league))
+                    },
+                    onTeamClicked = { team ->
+                        screenModel.handleAction(HandleTeamClicked(team))
+                    },
+                )
+
+                is StandingsViewState.Error -> StandingsError(errorMessage = viewState.errorMessage)
+            }
         }
     }
 
@@ -167,28 +172,32 @@ class StandingsScreen : Screen {
                 .clickable {
                     onTeamClicked(team)
                 },
-            color = Color.LightGray.copy(alpha = .5f),
-            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = MaterialTheme.shapes.large,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // TODO load image with avatar url
-//                Icon(
-//                    modifier = Modifier.size(32.dp),
-//                    painter = logo,
-//                    contentDescription = null,
-//                )
+                TeamLogo(
+                    modifier = Modifier.size(32.dp),
+                    logoUrl = team.avatar,
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
                     modifier = Modifier.weight(1f),
                     text = team.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                Text(text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}")
+                Text(
+                    text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

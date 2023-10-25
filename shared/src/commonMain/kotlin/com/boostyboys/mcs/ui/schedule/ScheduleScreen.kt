@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -36,6 +37,7 @@ import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.components.ActionIconOptions
 import com.boostyboys.mcs.designsystem.components.McsToolbar
+import com.boostyboys.mcs.designsystem.theme.AppTheme
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
@@ -52,59 +54,62 @@ class ScheduleScreen : Screen {
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<ScheduleScreenModel>()
-        val viewState = screenModel.viewState.collectAsState().value
+        AppTheme {
+            val navigator = LocalNavigator.currentOrThrow
+            val screenModel = getScreenModel<ScheduleScreenModel>()
+            val viewState = screenModel.viewState.collectAsState().value
 
-        val dialogState = remember { mutableStateOf(false) }
+            val dialogState = remember { mutableStateOf(false) }
 
-        LifecycleEffect(
-            onStarted = {
-                screenModel.handleAction(Initialize)
-            },
-        )
+            LifecycleEffect(
+                onStarted = {
+                    screenModel.handleAction(Initialize)
+                },
+            )
 
-        LaunchedEffect(screenModel) {
-            screenModel.effect.collect { effect ->
-                when (effect) {
-                    is ScheduleEffect.NavigateToMatchDetails -> {
-                        navigator.push(
-                            MatchDetailsScreen(
-                                match = effect.match,
-                                teamOne = effect.teamOne,
-                                teamTwo = effect.teamTwo,
-                            ),
-                        )
+            LaunchedEffect(screenModel) {
+                screenModel.effect.collect { effect ->
+                    when (effect) {
+                        is ScheduleEffect.NavigateToMatchDetails -> {
+                            navigator.push(
+                                MatchDetailsScreen(
+                                    match = effect.match,
+                                    teamOne = effect.teamOne,
+                                    teamTwo = effect.teamTwo,
+                                ),
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        when (viewState) {
-            is ScheduleViewState.Loading -> ScheduleLoading()
-            is ScheduleViewState.Content -> ScheduleContent(
-                viewState = viewState,
-                dialogState = dialogState,
-                onSeasonClicked = {
-                    screenModel.handleAction(UpdateSelectedSeason(it))
-                },
-                onLeagueClicked = {
-                    screenModel.handleAction(UpdateSelectedLeague(it))
-                },
-                onWeekClicked = {
-                    screenModel.handleAction(UpdateSelectedWeek(it))
-                },
-                onMatchClicked = { match, teamOne, teamTwo ->
-                    screenModel.handleAction(
-                        ScheduleAction.HandleMatchClicked(
-                            match = match,
-                            teamOne = teamOne,
-                            teamTwo = teamTwo,
-                        ),
-                    )
-                },
-            )
-            is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
+            when (viewState) {
+                is ScheduleViewState.Loading -> ScheduleLoading()
+                is ScheduleViewState.Content -> ScheduleContent(
+                    viewState = viewState,
+                    dialogState = dialogState,
+                    onSeasonClicked = {
+                        screenModel.handleAction(UpdateSelectedSeason(it))
+                    },
+                    onLeagueClicked = {
+                        screenModel.handleAction(UpdateSelectedLeague(it))
+                    },
+                    onWeekClicked = {
+                        screenModel.handleAction(UpdateSelectedWeek(it))
+                    },
+                    onMatchClicked = { match, teamOne, teamTwo ->
+                        screenModel.handleAction(
+                            ScheduleAction.HandleMatchClicked(
+                                match = match,
+                                teamOne = teamOne,
+                                teamTwo = teamTwo,
+                            ),
+                        )
+                    },
+                )
+
+                is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
+            }
         }
     }
 
@@ -153,9 +158,7 @@ class ScheduleScreen : Screen {
                             .padding(horizontal = 16.dp),
                     ) {
                         val matchesByDay = viewState.matchesForWeek.groupBy { match ->
-                            match.scheduledDateTime?.let { dateTime ->
-                                dateTime.date
-                            }
+                            match.scheduledDateTime?.date
                         }
 
                         items(matchesByDay.toList()) { (date, matches) ->
@@ -192,9 +195,17 @@ class ScheduleScreen : Screen {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text("error :(")
+            Text(
+                text = "error :(",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.error,
+            )
             errorMessage?.let { error ->
-                Text(error)
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
         }
     }
@@ -214,7 +225,11 @@ class ScheduleScreen : Screen {
             Spacer(modifier = Modifier.height(16.dp))
 
             dateText?.let {
-                Text(it)
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
 

@@ -43,6 +43,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
@@ -63,6 +64,7 @@ kotlin {
                 implementation(libs.ktor.content.negotiation)
                 implementation(libs.ktor.serialization.kotlinx)
                 implementation(libs.ktor.client.logging)
+                implementation(libs.kamel)
             }
         }
 
@@ -76,9 +78,9 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                api("androidx.activity:activity-compose:1.6.1")
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.9.0")
+                api(libs.activity.compose)
+                api(libs.appcompat)
+                api(libs.core.ktx)
                 implementation(libs.ktor.client.okhttp)
             }
         }

@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
+import com.boostyboys.mcs.designsystem.components.TeamLogo
 import com.boostyboys.mcs.util.format
 
 private const val TEAM_COLUMN_WEIGHT = 6f
@@ -42,8 +42,8 @@ fun MatchCell(
             .clickable {
                 onClick(match)
             },
-        color = Color.LightGray.copy(alpha = .5f),
-        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = MaterialTheme.shapes.large,
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -73,7 +73,7 @@ fun MatchCell(
                         .width(1.dp)
                         .fillMaxHeight()
                         .padding(vertical = 4.dp)
-                        .background(color = Color.Black),
+                        .background(color = MaterialTheme.colorScheme.onSurfaceVariant),
                 )
             }
 
@@ -88,7 +88,8 @@ fun MatchCell(
 
                 Text(
                     text = time ?: "",
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -99,29 +100,28 @@ fun MatchCell(
 private fun TeamRow(
     team: TeamWithResults,
 ) {
-//    val logo = rememberVectorPainter(team.avatar)
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-//        Icon(
-//            modifier = Modifier.size(32.dp),
-//            painter = logo,
-//            contentDescription = null,
-//        )
+        TeamLogo(
+            modifier = Modifier.size(32.dp),
+            logoUrl = team.avatar,
+        )
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             modifier = Modifier.weight(1f),
             text = team.name,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Text(
             text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.width(4.dp))
