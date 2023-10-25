@@ -107,8 +107,8 @@ class StandingsScreen : Screen {
     ) {
         MenuDialog(
             dialogShowingState = dialogState,
-            selectedLeagueId = (viewState as? StandingsViewState.Content)?.selectedLeague?.id ?: "",
-            leagues = (viewState as? StandingsViewState.Content)?.leagues ?: emptyList(),
+            selectedLeagueId = viewState.selectedLeague.id,
+            leagues = viewState.leagues,
             onSeasonClicked = onSeasonClicked,
             onLeagueClicked = onLeagueClicked,
         )
@@ -120,9 +120,7 @@ class StandingsScreen : Screen {
                 topBar = {
                     McsToolbar(
                         title = McsStrings.STANDINGS,
-                        subtitle = (viewState as? StandingsViewState.Content)?.let {
-                            "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name}"
-                        },
+                        subtitle = "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name}",
                         actionIconOptions = ActionIconOptions(
                             icon = Icons.Default.Menu,
                             contentDescription = McsStrings.MENU,
@@ -172,8 +170,9 @@ class StandingsScreen : Screen {
                 .clickable {
                     onTeamClicked(team)
                 },
-            color = MaterialTheme.colorScheme.surfaceVariant,
             shape = MaterialTheme.shapes.large,
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -190,13 +189,13 @@ class StandingsScreen : Screen {
                     modifier = Modifier.weight(1f),
                     text = team.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 Text(
                     text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -218,9 +217,17 @@ class StandingsScreen : Screen {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text("error :(")
+            Text(
+                text = "error :(",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.error,
+            )
             errorMessage?.let { error ->
-                Text(error)
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
         }
     }

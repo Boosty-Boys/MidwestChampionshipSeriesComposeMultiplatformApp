@@ -41,7 +41,11 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                 } else {
                     MaterialTheme.typography.labelMedium
                 },
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                },
             )
         },
         icon = {
@@ -49,7 +53,11 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                 Icon(
                     painter = it,
                     contentDescription = tab.options.title,
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    tint = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    },
                 )
             }
         },
