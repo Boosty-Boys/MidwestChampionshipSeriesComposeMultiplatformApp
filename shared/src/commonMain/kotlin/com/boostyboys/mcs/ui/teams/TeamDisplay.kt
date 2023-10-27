@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
-import com.boostyboys.mcs.designsystem.components.TeamLogo
+import com.boostyboys.mcs.designsystem.api.components.H1Text
 
 @Composable
 fun TeamDisplay(
@@ -45,10 +43,8 @@ fun TeamDisplay(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
+        H1Text(
             text = team.name,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
         )
     }

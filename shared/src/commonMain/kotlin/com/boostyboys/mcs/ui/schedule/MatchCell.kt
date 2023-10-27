@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +21,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
-import com.boostyboys.mcs.designsystem.components.TeamLogo
+import com.boostyboys.mcs.designsystem.api.components.ButtonText
+import com.boostyboys.mcs.designsystem.api.components.McsCard
+import com.boostyboys.mcs.designsystem.api.components.SubtitleText
+import com.boostyboys.mcs.designsystem.api.components.TitleText
+import com.boostyboys.mcs.designsystem.api.theme.McsTheme
+import com.boostyboys.mcs.ui.teams.TeamLogo
 import com.boostyboys.mcs.util.format
 
 private const val TEAM_COLUMN_WEIGHT = 6f
@@ -36,16 +39,13 @@ fun MatchCell(
     teamTwo: TeamWithResults?,
     onClick: (Match) -> Unit,
 ) {
-    Surface(
+    McsCard(
         modifier = modifier
             .fillMaxWidth()
             .height(88.dp)
             .clickable {
                 onClick(match)
             },
-        shape = MaterialTheme.shapes.large,
-        tonalElevation = 8.dp,
-        shadowElevation = 8.dp,
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -54,15 +54,9 @@ fun MatchCell(
             Column(
                 modifier = Modifier.weight(TEAM_COLUMN_WEIGHT),
             ) {
-                teamOne?.let { team ->
-                    TeamRow(team)
-                }
-
+                teamOne?.let { TeamRow(it) }
                 Spacer(modifier = Modifier.height(8.dp))
-
-                teamTwo?.let { team ->
-                    TeamRow(team)
-                }
+                teamTwo?.let { TeamRow(team = it) }
             }
 
             // divider
@@ -75,7 +69,10 @@ fun MatchCell(
                         .width(1.dp)
                         .fillMaxHeight()
                         .padding(vertical = 4.dp)
-                        .background(color = MaterialTheme.colorScheme.onSurface),
+                        .background(
+                            color = McsTheme.colors.onSurface,
+                            shape = RoundedCornerShape(percent = 50),
+                        ),
                 )
             }
 
@@ -84,15 +81,8 @@ fun MatchCell(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                val matchDayTime = match.scheduledDateTime
-
-                val time = matchDayTime?.format("h:mm a")
-
-                Text(
-                    text = time ?: "",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                val time = match.scheduledDateTime?.format("h:mm a")
+                ButtonText(text = time ?: "")
             }
         }
     }
@@ -113,19 +103,15 @@ private fun TeamRow(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Text(
+        TitleText(
             modifier = Modifier.weight(1f),
             text = team.name,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
 
-        Text(
+        SubtitleText(
             text = "${team.matchesWon}-${team.matchesPlayed - team.matchesWon}",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
         )
 

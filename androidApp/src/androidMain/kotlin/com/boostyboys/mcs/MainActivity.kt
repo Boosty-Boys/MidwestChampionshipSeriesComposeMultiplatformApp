@@ -4,9 +4,8 @@ import MainView
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.toArgb
-import com.boostyboys.mcs.designsystem.theme.AppTheme
+import com.boostyboys.mcs.designsystem.api.theme.McsTheme
 import com.boostyboys.mcs.di.initKoin
 
 class MainActivity : AppCompatActivity() {
@@ -15,8 +14,8 @@ class MainActivity : AppCompatActivity() {
         initKoin()
 
         setContent {
-            AppTheme {
-                window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
+            McsTheme {
+                window.statusBarColor = McsTheme.colors.background.toArgb()
                 MainView()
             }
         }

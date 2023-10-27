@@ -3,19 +3,20 @@ package com.boostyboys.mcs.ui.bottomnavigation
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
+import com.boostyboys.mcs.designsystem.api.components.ButtonText
+import com.boostyboys.mcs.designsystem.api.theme.McsTheme
 
+// TODO add to design system with expect/actual
 @Composable
 internal fun McsBottomNavigation() {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        backgroundColor = McsTheme.colors.surface.copy(alpha = 0.75f),
+        contentColor = McsTheme.colors.onSurface.copy(alpha = 0.75f),
     ) {
         TabNavigationItem(ScheduleTab)
         TabNavigationItem(TeamTab)
@@ -34,17 +35,12 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
         selected = isSelected,
         onClick = { tabNavigator.current = tab },
         label = {
-            Text(
+            ButtonText(
                 text = tab.options.title,
-                style = if (isSelected) {
-                    MaterialTheme.typography.labelLarge
-                } else {
-                    MaterialTheme.typography.labelMedium
-                },
                 color = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
+                    McsTheme.colors.secondary
                 } else {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    McsTheme.colors.onSurface.copy(alpha = 0.75f)
                 },
             )
         },
@@ -54,9 +50,9 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     painter = it,
                     contentDescription = tab.options.title,
                     tint = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
+                        McsTheme.colors.secondary
                     } else {
-                        MaterialTheme.colorScheme.onSecondaryContainer
+                        McsTheme.colors.onSurface.copy(alpha = 0.75f)
                     },
                 )
             }

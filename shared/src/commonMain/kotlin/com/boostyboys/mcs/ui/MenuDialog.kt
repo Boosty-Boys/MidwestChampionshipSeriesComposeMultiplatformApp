@@ -4,9 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +15,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.season.Week
+import com.boostyboys.mcs.designsystem.api.components.ButtonText
+import com.boostyboys.mcs.designsystem.api.components.McsCard
 import com.boostyboys.mcs.ui.MenuDialogConfig.LEAGUE_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.MENU_SELECTION
 import com.boostyboys.mcs.ui.MenuDialogConfig.SEASON_SELECTION
@@ -44,14 +43,11 @@ fun MenuDialog(
                 configState.value = MENU_SELECTION
             },
             content = {
-                Surface(
+                McsCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    shape = MaterialTheme.shapes.extraLarge,
-                    color = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 8.dp,
-                    shadowElevation = 8.dp,
+                    elevation = 8.dp,
                 ) {
                     when (configState.value) {
                         MENU_SELECTION -> {
@@ -93,7 +89,7 @@ private fun MenuSelection(
             .fillMaxWidth()
             .padding(16.dp),
     ) {
-        Text(
+        ButtonText(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
@@ -101,11 +97,9 @@ private fun MenuSelection(
                     configState.value = SEASON_SELECTION
                 },
             text = "Select Season",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
         )
 
-        Text(
+        ButtonText(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
@@ -113,12 +107,10 @@ private fun MenuSelection(
                     configState.value = LEAGUE_SELECTION
                 },
             text = "Select League",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
         )
 
         if (showWeeks) {
-            Text(
+            ButtonText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -126,8 +118,6 @@ private fun MenuSelection(
                         configState.value = WEEK_SELECTION
                     },
                 text = "Select Week",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -146,7 +136,7 @@ private fun SeasonSelection(
             .padding(16.dp),
     ) {
         seasons.forEach {
-            Text(
+            ButtonText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -156,8 +146,6 @@ private fun SeasonSelection(
                         configState.value = MENU_SELECTION
                     },
                 text = "Season ${it.name}",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -176,7 +164,7 @@ private fun LeagueSelection(
             .padding(16.dp),
     ) {
         leagues.forEach {
-            Text(
+            ButtonText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -186,8 +174,6 @@ private fun LeagueSelection(
                         configState.value = MENU_SELECTION
                     },
                 text = it.name,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -206,7 +192,7 @@ private fun WeekSelection(
             .padding(16.dp),
     ) {
         for (week in 1..weeks) {
-            Text(
+            ButtonText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -216,8 +202,6 @@ private fun WeekSelection(
                         configState.value = MENU_SELECTION
                     },
                 text = "${McsStrings.WEEK} $week",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
