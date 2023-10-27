@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.designsystem.components
+package com.boostyboys.mcs.designsystem.api.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,27 +7,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.boostyboys.mcs.designsystem.api.theme.McsTheme
+import com.boostyboys.mcs.designsystem.api.theme.contentColorFor
 import com.boostyboys.mcs.ui.McsStrings
 
-@OptIn(ExperimentalMaterial3Api::class)
+// @Composable expect fun McsToolbar() TODO
 @Composable
 fun McsToolbar(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = McsTheme.colors.background,
     subtitle: String? = null,
     onBackClicked: (() -> Unit)? = null,
     actionIconOptions: ActionIconOptions? = null,
@@ -36,6 +37,8 @@ fun McsToolbar(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp),
+        backgroundColor = backgroundColor,
+        contentColor = contentColorFor(backgroundColor),
         navigationIcon = {
             if (onBackClicked != null) {
                 val iconBack = rememberVectorPainter(Icons.Default.ArrowBack)
@@ -48,7 +51,6 @@ fun McsToolbar(
                     Icon(
                         painter = iconBack,
                         contentDescription = McsStrings.GO_BACK,
-                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             } else {
@@ -65,7 +67,6 @@ fun McsToolbar(
                     Icon(
                         painter = iconAction,
                         contentDescription = actionIconOptions.contentDescription,
-                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             } else {
@@ -74,27 +75,18 @@ fun McsToolbar(
         },
         title = {
             Column(
-                modifier = Modifier.fillMaxWidth()
-                    .height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                TitleText(text = title)
 
                 subtitle?.let {
                     Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    SubtitleText(text = it)
                 }
             }
         },

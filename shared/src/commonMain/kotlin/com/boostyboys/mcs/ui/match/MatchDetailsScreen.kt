@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +19,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
-import com.boostyboys.mcs.designsystem.components.McsToolbar
+import com.boostyboys.mcs.designsystem.api.components.H1Text
+import com.boostyboys.mcs.designsystem.api.components.McsScaffold
+import com.boostyboys.mcs.designsystem.api.components.McsToolbar
 import com.boostyboys.mcs.ui.teams.TeamDisplay
 
 data class MatchDetailsScreen(
@@ -36,49 +34,44 @@ data class MatchDetailsScreen(
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        Surface(
+        McsScaffold(
             modifier = Modifier.fillMaxSize(),
-        ) {
-            Scaffold(
-                topBar = {
-                    McsToolbar(
-                        title = "Match Details",
-                        onBackClicked = {
-                            navigator.pop()
-                        },
-                    )
-                },
-                content = {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(it),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+            topBar = {
+                McsToolbar(
+                    title = "Match Details",
+                    onBackClicked = {
+                        navigator.pop()
+                    },
+                )
+            },
+            content = {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                        .padding(it),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        TeamDisplayOrSpace(teamOne)
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            TeamDisplayOrSpace(teamOne)
+                        H1Text(
+                            modifier = Modifier.weight(VS_WEIGHT),
+                            text = "vs",
+                            textAlign = TextAlign.Center,
+                        )
 
-                            Text(
-                                modifier = Modifier.weight(VS_WEIGHT),
-                                text = "vs",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                textAlign = TextAlign.Center,
-                            )
-
-                            TeamDisplayOrSpace(teamTwo)
-                        }
+                        TeamDisplayOrSpace(teamTwo)
                     }
-                },
-            )
-        }
+                }
+            },
+        )
     }
 
     @Composable

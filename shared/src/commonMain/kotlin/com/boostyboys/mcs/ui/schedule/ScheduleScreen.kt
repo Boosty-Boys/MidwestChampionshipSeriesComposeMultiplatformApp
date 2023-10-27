@@ -1,7 +1,5 @@
 package com.boostyboys.mcs.ui.schedule
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,18 +9,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
@@ -35,8 +27,12 @@ import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
-import com.boostyboys.mcs.designsystem.components.ActionIconOptions
-import com.boostyboys.mcs.designsystem.components.McsToolbar
+import com.boostyboys.mcs.designsystem.api.components.ActionIconOptions
+import com.boostyboys.mcs.designsystem.api.components.H2Text
+import com.boostyboys.mcs.designsystem.api.components.McsFullScreenError
+import com.boostyboys.mcs.designsystem.api.components.McsFullScreenLoader
+import com.boostyboys.mcs.designsystem.api.components.McsScaffold
+import com.boostyboys.mcs.designsystem.api.components.McsToolbar
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
@@ -82,7 +78,7 @@ class ScheduleScreen : Screen {
         }
 
         when (viewState) {
-            is ScheduleViewState.Loading -> ScheduleLoading()
+            is ScheduleViewState.Loading -> McsFullScreenLoader()
             is ScheduleViewState.Content -> ScheduleContent(
                 viewState = viewState,
                 dialogState = dialogState,
@@ -105,8 +101,7 @@ class ScheduleScreen : Screen {
                     )
                 },
             )
-
-            is ScheduleViewState.Error -> ScheduleError(errorMessage = viewState.errorMessage)
+            is ScheduleViewState.Error -> McsFullScreenError(errorMessage = viewState.errorMessage)
         }
     }
 
@@ -129,82 +124,48 @@ class ScheduleScreen : Screen {
             onWeekClicked = onWeekClicked,
         )
 
-        Surface(
+        McsScaffold(
             modifier = Modifier.fillMaxSize(),
-        ) {
-            Scaffold(
-                topBar = {
-                    McsToolbar(
-                        title = McsStrings.SCHEDULE,
-                        subtitle = "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
-                            "${McsStrings.WEEK} ${viewState.selectedWeek.value}",
-                        actionIconOptions = ActionIconOptions(
-                            icon = Icons.Default.Menu,
-                            contentDescription = McsStrings.MENU,
-                            onClick = {
-                                dialogState.value = true
-                            },
-                        ),
-                    )
-                },
-                content = {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        val matchesByDay = viewState.matchesForWeek.groupBy { match ->
-                            match.scheduledDateTime?.date
-                        }
-
-                        items(matchesByDay.toList()) { (date, matches) ->
-                            MatchDayBlock(
-                                date = date,
-                                matches = matches,
-                                teams = viewState.teams,
-                                onMatchClicked = onMatchClicked,
-                            )
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(24.dp))
-                        }
-                    }
-                },
-            )
-        }
-    }
-
-    @Composable
-    private fun ScheduleLoading() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
-    }
-
-    @Composable
-    private fun ScheduleError(errorMessage: String?) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                text = "error :(",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.error,
-            )
-            errorMessage?.let { error ->
-                Text(
-                    text = error,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
+            topBar = {
+                McsToolbar(
+                    title = McsStrings.SCHEDULE,
+                    subtitle = "Season ${viewState.selectedSeason.name} | ${viewState.selectedLeague.name} | " +
+                        "${McsStrings.WEEK} ${viewState.selectedWeek.value}",
+                    actionIconOptions = ActionIconOptions(
+                        icon = Icons.Default.Menu,
+                        contentDescription = McsStrings.MENU,
+                        onClick = {
+                            dialogState.value = true
+                        },
+                    ),
                 )
-            }
-        }
+            },
+            content = {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .padding(horizontal = 16.dp),
+                ) {
+                    val matchesByDay = viewState.matchesForWeek.groupBy { match ->
+                        match.scheduledDateTime?.date
+                    }
+
+                    items(matchesByDay.toList()) { (date, matches) ->
+                        MatchDayBlock(
+                            date = date,
+                            matches = matches,
+                            teams = viewState.teams,
+                            onMatchClicked = onMatchClicked,
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                }
+            },
+        )
     }
 
     @Composable
@@ -222,11 +183,7 @@ class ScheduleScreen : Screen {
             Spacer(modifier = Modifier.height(8.dp))
 
             dateText?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                H2Text(text = it)
                 Spacer(modifier = Modifier.height(8.dp))
             }
 

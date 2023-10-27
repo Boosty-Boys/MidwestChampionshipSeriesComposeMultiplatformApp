@@ -101,6 +101,7 @@ complexity:
     threshold: 100
   LongParameterList:
     active: true
+    excludes: ['**/designsystem/**']
     functionThreshold: 8
     constructorThreshold: 10
     ignoreDefaultParameters: false
@@ -479,7 +480,7 @@ style:
     maxJumpCount: 1
   MagicNumber:
     active: true
-    excludes: ['**/AppColors.kt', '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
+    excludes: ['**/McsColors.kt', '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
