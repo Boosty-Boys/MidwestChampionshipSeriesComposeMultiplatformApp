@@ -12,11 +12,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.boostyboys.mcs.designsystem.api.components.McsBottomNavigation
 import com.boostyboys.mcs.designsystem.api.components.McsFullScreenLoader
 import com.boostyboys.mcs.designsystem.api.components.McsScaffold
 import com.boostyboys.mcs.designsystem.api.theme.McsTheme
-import com.boostyboys.mcs.ui.bottomnavigation.McsBottomNavigation
-import com.boostyboys.mcs.ui.bottomnavigation.ScheduleTab
+import com.boostyboys.mcs.navigation.ScheduleTab
 
 class MainScreen : Screen {
 

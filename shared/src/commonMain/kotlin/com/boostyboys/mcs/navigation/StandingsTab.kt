@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.ui.bottomnavigation
+package com.boostyboys.mcs.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -11,12 +11,12 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.boostyboys.mcs.ui.teams.StandingsScreen
 
-object TeamTab : Tab {
+object StandingsTab : Tab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Teams"
+            val title = "Standings"
             val icon = rememberVectorPainter(Icons.Default.Person)
 
             return remember {

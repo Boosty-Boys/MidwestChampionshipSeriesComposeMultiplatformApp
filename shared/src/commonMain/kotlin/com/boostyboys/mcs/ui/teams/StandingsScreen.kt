@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -31,13 +32,13 @@ import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
 import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.api.components.ActionIconOptions
+import com.boostyboys.mcs.designsystem.api.components.BodyText
 import com.boostyboys.mcs.designsystem.api.components.McsCard
 import com.boostyboys.mcs.designsystem.api.components.McsFullScreenError
 import com.boostyboys.mcs.designsystem.api.components.McsFullScreenLoader
 import com.boostyboys.mcs.designsystem.api.components.McsScaffold
 import com.boostyboys.mcs.designsystem.api.components.McsToolbar
 import com.boostyboys.mcs.designsystem.api.components.SubtitleText
-import com.boostyboys.mcs.designsystem.api.components.TitleText
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.teams.StandingsAction.HandleTeamClicked
@@ -141,7 +142,7 @@ class StandingsScreen : Screen {
                             team = team,
                             onTeamClicked = onTeamClicked,
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             },
@@ -156,7 +157,7 @@ class StandingsScreen : Screen {
         McsCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .wrapContentHeight()
                 .clickable {
                     onTeamClicked(team)
                 },
@@ -172,7 +173,7 @@ class StandingsScreen : Screen {
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                TitleText(
+                BodyText(
                     modifier = Modifier.weight(1f),
                     text = team.name,
                 )

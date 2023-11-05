@@ -15,7 +15,7 @@ import com.boostyboys.mcs.designsystem.api.theme.contentColorFor
 @Composable
 fun McsCard(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = RoundedCornerShape(8.dp),
     backgroundColor: Color = McsTheme.colors.surface,
     contentColor: Color = contentColorFor(backgroundColor),
     border: BorderStroke? = null,

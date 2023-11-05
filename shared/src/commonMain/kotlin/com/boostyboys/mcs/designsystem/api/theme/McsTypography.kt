@@ -20,7 +20,7 @@ internal val LocalTypography: ProvidableCompositionLocal<McsTypography> = static
 
 object Typography : McsTypography {
     override val h1 = TextStyle(
-        fontSize = 30.sp,
+        fontSize = 28.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = 0.15.sp,
     )
@@ -30,12 +30,12 @@ object Typography : McsTypography {
         letterSpacing = 0.1.sp,
     )
     override val title = TextStyle(
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = 0.15.sp,
     )
     override val subtitle = TextStyle(
-        fontSize = 16.sp,
+        fontSize = 15.sp,
         fontWeight = FontWeight.Normal,
         letterSpacing = 0.1.sp,
     )
