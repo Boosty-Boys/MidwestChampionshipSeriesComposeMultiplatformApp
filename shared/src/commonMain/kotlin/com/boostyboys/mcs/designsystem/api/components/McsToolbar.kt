@@ -67,6 +67,7 @@ fun McsToolbar(
                     Icon(
                         painter = iconAction,
                         contentDescription = actionIconOptions.contentDescription,
+                        tint = McsTheme.colors.onBackground,
                     )
                 }
             } else {
@@ -86,7 +87,7 @@ fun McsToolbar(
 
                 subtitle?.let {
                     Spacer(modifier = Modifier.height(2.dp))
-                    SubtitleText(text = it)
+                    CaptionText(text = it)
                 }
             }
         },

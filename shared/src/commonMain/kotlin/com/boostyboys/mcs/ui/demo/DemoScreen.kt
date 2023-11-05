@@ -7,154 +7,106 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import com.boostyboys.mcs.designsystem.api.theme.DarkColors
-import com.boostyboys.mcs.designsystem.api.theme.LightColors
-import com.boostyboys.mcs.designsystem.api.theme.McsColors
+import com.boostyboys.mcs.designsystem.api.components.McsAlertButton
+import com.boostyboys.mcs.designsystem.api.components.McsPrimaryButton
+import com.boostyboys.mcs.designsystem.api.components.McsSecondaryButton
+import com.boostyboys.mcs.designsystem.api.components.TitleText
+import com.boostyboys.mcs.designsystem.api.theme.McsTheme
 import com.boostyboys.mcs.designsystem.api.theme.Typography
 
 class DemoScreen : Screen {
 
     @Composable
     override fun Content() {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-        ) {
-            item { Spacer(modifier = Modifier.height(16.dp)) }
+        McsTheme {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(McsTheme.colors.background),
+            ) {
+                colorSection()
 
-            item {
-                Text(
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-                    text = "Light Colors",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                )
+                typographySection()
+
+                buttonSection()
+
+                // card
+
+                // loader
+
+                item { Spacer(modifier = Modifier.height(64.dp)) }
             }
-
-            colorSection(LightColors)
-
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-
-            item {
-                Text(
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-                    text = "Dark Colors",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-
-            colorSection(DarkColors)
-
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.h1,
-                    label = "This is the style of h1.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.h2,
-                    label = "This is the style of h2.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.title,
-                    label = "This is the style of title.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.subtitle,
-                    label = "This is the style of subtitle.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.body,
-                    label = "This is the style of body.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.caption,
-                    label = "This is the style of caption.",
-                )
-            }
-
-            item {
-                TypographyRow(
-                    textStyle = Typography.button,
-                    label = "This is the style of button.",
-                )
-            }
-
-            item { Spacer(modifier = Modifier.height(64.dp)) }
         }
     }
 
-    private fun LazyListScope.colorSection(
-        colors: McsColors,
-    ) {
+    @Composable
+    private fun SectionHeader(text: String) {
+        TitleText(
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 32.dp, bottom = 8.dp),
+            text = text,
+            color = McsTheme.colors.onBackground,
+            textAlign = TextAlign.Center,
+        )
+    }
+
+    private fun LazyListScope.colorSection() {
+        item {
+            SectionHeader(text = "Colors:")
+        }
+
         item {
             ColorRow(
-                color = colors.primary,
-                onColor = colors.onPrimary,
+                color = McsTheme.colors.primary,
+                onColor = McsTheme.colors.onPrimary,
                 label = "onPrimary",
             )
         }
 
         item {
             ColorRow(
-                color = colors.secondary,
-                onColor = colors.onSecondary,
+                color = McsTheme.colors.secondary,
+                onColor = McsTheme.colors.onSecondary,
                 label = "onSecondary",
             )
         }
 
         item {
             ColorRow(
-                color = colors.background,
-                onColor = colors.onBackground,
+                color = McsTheme.colors.background,
+                onColor = McsTheme.colors.onBackground,
                 label = "onBackground",
             )
         }
 
         item {
             ColorRow(
-                color = colors.surface,
-                onColor = colors.onSurface,
+                color = McsTheme.colors.surface,
+                onColor = McsTheme.colors.onSurface,
                 label = "onSurface",
             )
         }
 
         item {
             ColorRow(
-                color = colors.alert,
-                onColor = colors.onAlert,
+                color = McsTheme.colors.alert,
+                onColor = McsTheme.colors.onAlert,
                 label = "onAlert",
             )
         }
@@ -170,7 +122,7 @@ class DemoScreen : Screen {
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .height(80.dp)
+                .height(60.dp)
                 .background(color = color),
             contentAlignment = Alignment.CenterStart,
             content = {
@@ -185,24 +137,154 @@ class DemoScreen : Screen {
         )
     }
 
+    private fun LazyListScope.typographySection() {
+        item {
+            SectionHeader(text = "Typography:")
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.h1,
+                label = "This is the style of h1.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.h2,
+                label = "This is the style of h2.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.title,
+                label = "This is the style of title.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.subtitle,
+                label = "This is the style of subtitle.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.body,
+                label = "This is the style of body.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.caption,
+                label = "This is the style of caption.",
+            )
+        }
+
+        item {
+            TypographyRow(
+                textStyle = Typography.button,
+                label = "This is the style of button.",
+            )
+        }
+    }
+
     @Composable
     private fun TypographyRow(
         textStyle: TextStyle,
         label: String,
-        modifier: Modifier = Modifier,
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),
+                .wrapContentHeight(),
             contentAlignment = Alignment.CenterStart,
             content = {
                 Text(
                     modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
                     text = label,
                     style = textStyle,
+                    color = McsTheme.colors.onBackground,
                 )
             },
         )
+    }
+
+    private fun LazyListScope.buttonSection() {
+        item {
+            SectionHeader(text = "Buttons:")
+        }
+
+        // primary enabled
+        item {
+            McsPrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Primary Button",
+                onClick = {},
+            )
+        }
+
+        // primary disabled
+        item {
+            McsPrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Primary Disabled",
+                enabled = false,
+                onClick = {},
+            )
+        }
+
+        // secondary enabled
+        item {
+            McsSecondaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Secondary Button",
+                onClick = {},
+            )
+        }
+
+        // secondary disabled
+        item {
+            McsSecondaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Secondary Disabled",
+                enabled = false,
+                onClick = {},
+            )
+        }
+
+        // alert enabled
+        item {
+            McsAlertButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Alert Button",
+                onClick = {},
+            )
+        }
+
+        // alert disabled
+        item {
+            McsAlertButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                text = "Alert Disabled",
+                enabled = false,
+                onClick = {},
+            )
+        }
     }
 }

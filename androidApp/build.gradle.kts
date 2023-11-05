@@ -13,6 +13,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared"))
                 implementation(libs.koin)
+                implementation(compose.material)
             }
         }
     }

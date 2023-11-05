@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.ui.bottomnavigation
+package com.boostyboys.mcs.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange

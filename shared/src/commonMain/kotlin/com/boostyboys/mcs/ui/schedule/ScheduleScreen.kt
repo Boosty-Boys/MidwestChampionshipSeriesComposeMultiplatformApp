@@ -28,11 +28,11 @@ import com.boostyboys.mcs.data.api.models.season.Season
 import com.boostyboys.mcs.data.api.models.season.Week
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import com.boostyboys.mcs.designsystem.api.components.ActionIconOptions
-import com.boostyboys.mcs.designsystem.api.components.H2Text
 import com.boostyboys.mcs.designsystem.api.components.McsFullScreenError
 import com.boostyboys.mcs.designsystem.api.components.McsFullScreenLoader
 import com.boostyboys.mcs.designsystem.api.components.McsScaffold
 import com.boostyboys.mcs.designsystem.api.components.McsToolbar
+import com.boostyboys.mcs.designsystem.api.components.TitleText
 import com.boostyboys.mcs.ui.McsStrings
 import com.boostyboys.mcs.ui.MenuDialog
 import com.boostyboys.mcs.ui.match.MatchDetailsScreen
@@ -183,7 +183,7 @@ class ScheduleScreen : Screen {
             Spacer(modifier = Modifier.height(8.dp))
 
             dateText?.let {
-                H2Text(text = it)
+                TitleText(text = it)
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -192,7 +192,7 @@ class ScheduleScreen : Screen {
                 val teamTwo = teams.find { it.id == match.teamTwoId }
 
                 MatchCell(
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = 4.dp),
                     match = match,
                     teamOne = teams.find { it.id == match.teamOneId },
                     teamTwo = teams.find { it.id == match.teamTwoId },
