@@ -1,7 +1,6 @@
 package com.boostyboys.mcs.ui.schedule
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,10 +44,8 @@ fun MatchCell(
     McsCard(
         modifier = modifier
             .fillMaxWidth()
-            .height(88.dp)
-            .clickable {
-                onClick(match)
-            },
+            .height(88.dp),
+        onClick = { onClick(match) },
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),

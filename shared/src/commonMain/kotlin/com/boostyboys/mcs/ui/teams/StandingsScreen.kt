@@ -1,6 +1,5 @@
 package com.boostyboys.mcs.ui.teams
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -157,10 +156,8 @@ class StandingsScreen : Screen {
         McsCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
-                .clickable {
-                    onTeamClicked(team)
-                },
+                .wrapContentHeight(),
+            onClick = { onTeamClicked(team) },
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

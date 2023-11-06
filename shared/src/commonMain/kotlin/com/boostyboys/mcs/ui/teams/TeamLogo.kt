@@ -13,7 +13,7 @@ import io.kamel.image.asyncPainterResource
 fun TeamLogo(
     modifier: Modifier = Modifier,
     logoUrl: String,
-    forceFallback: Boolean = false,
+    forceFallback: Boolean = true,
 ) {
     if (forceFallback) {
         FallbackIcon(modifier = modifier)
