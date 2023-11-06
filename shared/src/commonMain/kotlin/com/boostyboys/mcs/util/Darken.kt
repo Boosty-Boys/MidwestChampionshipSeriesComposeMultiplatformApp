@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.designsystem.api.components
+package com.boostyboys.mcs.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color

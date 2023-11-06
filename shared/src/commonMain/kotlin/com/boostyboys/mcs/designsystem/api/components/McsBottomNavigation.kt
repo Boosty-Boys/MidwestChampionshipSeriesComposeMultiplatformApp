@@ -17,9 +17,7 @@ import com.boostyboys.mcs.designsystem.api.theme.contentColorFor
 import com.boostyboys.mcs.navigation.ScheduleTab
 import com.boostyboys.mcs.navigation.StandingsTab
 
-// import androidx.compose.runtime.Composable
-// TODO
-// @Composable expect fun McsBottomNavigation()
+// TODO @Composable expect fun McsBottomNavigation()
 @Composable
 fun McsBottomNavigation(
     modifier: Modifier = Modifier,
