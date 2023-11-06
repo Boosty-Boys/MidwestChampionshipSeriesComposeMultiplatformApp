@@ -45,7 +45,7 @@ actual fun McsCard(
         modifier = clickableModifier,
         shape = shape,
         backgroundColor = if (onClick != null && isPressed) {
-            backgroundColor.darken(.01f)
+            backgroundColor.darken(0.1f)
         } else {
             backgroundColor
         },
