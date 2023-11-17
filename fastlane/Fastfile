@@ -11,7 +11,7 @@ platform :ios do
 
   private_lane :build_mcs do |options|
     build_app(
-      workspace: "iosApp/iosApp.xcworkspace",
+      project: "iosApp/iosApp.xcodeproj",
       scheme: options[:scheme],
       buildlog_path: "build/fastlane-buildlog",
       skip_package_ipa: true,
