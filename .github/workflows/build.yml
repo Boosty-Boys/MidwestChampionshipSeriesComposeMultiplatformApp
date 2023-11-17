@@ -71,23 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: android-build-outputs
-          path: android-app/app/build/outputs
-
-      - name: Upload reports
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-reports
-          path: |
-            **/build/reports/*
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-test-results
-          path: |
-            **/build/test-results/*
+          path: androidApp/build/outputs/apk/
 
   desktop:
     needs: [code-style]
@@ -119,22 +103,7 @@ jobs:
         with:
           name: desktop-build-binaries
           path: desktop-app/build/compose/binaries
-
-      - name: Upload reports
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: desktop-reports
-          path: |
-            **/build/reports/*
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: desktop-test-results
-          path: |
-            **/build/test-results/*
+          
   ios:
     needs: [code-style]
     runs-on: macos-latest
@@ -164,16 +133,6 @@ jobs:
 
       - name: Build iOS application
         run: bundle exec fastlane ios build
-
-      - name: Upload build outputs
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v3
-        with:
-          name: ios-build-outputs
-          path: |
-            *.ipa
-            *.dSYM.zip
 
       - name: Upload build logs
         if: always()
