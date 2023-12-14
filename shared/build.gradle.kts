@@ -1,6 +1,5 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.compose")
     // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
@@ -15,23 +14,17 @@ kotlin {
 
     jvm("desktop")
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    cocoapods {
-        version = "1.0.0"
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../iosApp/Podfile")
-        framework {
-            baseName = "shared"
-            isStatic = true
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach { iosTarget ->
+        iosTarget.binaries {
+            framework {
+                baseName = "shared"
+                isStatic = true
+            }
         }
-        // re-enable after kotlin 1.9 support https://github.com/icerockdev/moko-resources/issues/535
-        // extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
-        extraSpecAttributes["exclude_files"] = "['src/commonMain/resources/MR/**']"
     }
 
     sourceSets {
