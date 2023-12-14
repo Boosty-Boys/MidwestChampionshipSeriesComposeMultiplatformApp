@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.main
+package com.boostyboys.mcs.ui.main
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
