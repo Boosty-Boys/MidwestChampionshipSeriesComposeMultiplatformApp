@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.team
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,4 +13,4 @@ data class TeamWithResults(
     @SerialName("matches_played") var matchesPlayed: Int,
     @SerialName("games_won") var gamesWon: Int,
     @SerialName("games_played") var gamesPlayed: Int,
-)
+) : JavaSerializable
