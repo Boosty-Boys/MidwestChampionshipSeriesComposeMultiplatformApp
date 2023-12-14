@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.main
+package com.boostyboys.mcs.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

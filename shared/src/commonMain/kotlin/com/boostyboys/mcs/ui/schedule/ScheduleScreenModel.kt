@@ -1,7 +1,7 @@
 package com.boostyboys.mcs.ui.schedule
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
@@ -28,7 +28,7 @@ class ScheduleScreenModel(
 
     override fun handleAction(action: ScheduleAction) {
         super.handleAction(action)
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
                     collectLeagueSeasonConfig()
@@ -93,7 +93,7 @@ class ScheduleScreenModel(
     private fun updateSelectedSeason(season: Season) {
         localRepository.selectedSeasonId = season.id
 
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()
         }
     }
@@ -101,7 +101,7 @@ class ScheduleScreenModel(
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
         localRepository.selectedLeagueId = league.id
 
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()
         }
     }
@@ -109,7 +109,7 @@ class ScheduleScreenModel(
     private fun updateSelectedWeek(week: Week) {
         localRepository.selectedWeek = week
 
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             updateViewWithSchedule(week)
         }
     }

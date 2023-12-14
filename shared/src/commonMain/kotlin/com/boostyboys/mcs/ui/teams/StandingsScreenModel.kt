@@ -1,7 +1,7 @@
 package com.boostyboys.mcs.ui.teams
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.boostyboys.mcs.data.api.LocalRepository
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.data.api.models.league.LeagueWithSeasons
@@ -26,7 +26,7 @@ class StandingsScreenModel(
 
     override fun handleAction(action: StandingsAction) {
         super.handleAction(action)
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             when (action) {
                 is Initialize -> {
                     collectLeagueSeasonConfig()
@@ -71,7 +71,7 @@ class StandingsScreenModel(
     private fun updateSelectedSeason(season: Season) {
         localRepository.selectedSeasonId = season.id
 
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()
         }
     }
@@ -79,7 +79,7 @@ class StandingsScreenModel(
     private fun updateSelectedLeague(league: LeagueWithSeasons) {
         localRepository.selectedLeagueId = league.id
 
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             mcsRepository.reloadLeagueSeasonConfig()
         }
     }

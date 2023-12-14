@@ -1,4 +1,4 @@
-package com.boostyboys.mcs.main
+package com.boostyboys.mcs.ui.main
 
 sealed interface MainViewState {
     data object Loading : MainViewState

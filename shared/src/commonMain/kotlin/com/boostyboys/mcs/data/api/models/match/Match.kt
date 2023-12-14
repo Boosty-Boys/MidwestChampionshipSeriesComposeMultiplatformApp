@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.match
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,9 +16,11 @@ data class Match(
     @SerialName("team_two_id") val teamTwoId: String?,
     @SerialName("winning_team_id") val winningTeamId: String?,
     @SerialName("is_forfeit") val isForfeit: Boolean,
-    @Serializable(with = LocalDateTimeSerializer::class)
-    @SerialName("scheduled_date_time") val scheduledDateTime: LocalDateTime?,
+    @SerialName("scheduled_date_time") private val scheduledDateTimeWrapper: LocalDateTimeWrapper?,
     @SerialName("players_to_teams") val playersToTeams: List<PlayersToTeam>,
     @SerialName("stream_link") val streamLink: String?,
     @SerialName("games") val games: List<Game>,
-)
+) : JavaSerializable {
+    val scheduledDateTime: LocalDateTime?
+        get() = scheduledDateTimeWrapper?.localDateTime
+}
