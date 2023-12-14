@@ -34,9 +34,9 @@ gradlePlugin {
             implementationClass = "com.boostyboys.mcs.gradle.RootConventionPlugin"
         }
 
-        register("precommit") {
-            id = "com.boostyboys.mcs.precommit"
-            implementationClass = "com.boostyboys.mcs.gradle.PreCommitPlugin"
-        }
+//        register("precommit") {
+//            id = "com.boostyboys.mcs.precommit"
+//            implementationClass = "com.boostyboys.mcs.gradle.PreCommitPlugin"
+//        }
     }
 }

@@ -3,7 +3,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.compose")
     id("com.boostyboys.mcs.root")
-    id("com.boostyboys.mcs.precommit")
+//    id("com.boostyboys.mcs.precommit")
 }
 
 kotlin {
