@@ -1,7 +1,7 @@
 package com.boostyboys.mcs.ui.main
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.boostyboys.mcs.data.api.McsRepository
 import com.boostyboys.mcs.state.StateHandler
 import com.boostyboys.mcs.state.StateHandlerDelegate
@@ -16,7 +16,7 @@ class MainScreenModel(
     by StateHandlerDelegate(Any(), MainViewState.Loading) {
     override fun handleAction(action: MainAction) {
         super.handleAction(action)
-        coroutineScope.launch(dispatcher) {
+        screenModelScope.launch(dispatcher) {
             when (action) {
                 is MainAction.Initialize -> {
                     initialize()
