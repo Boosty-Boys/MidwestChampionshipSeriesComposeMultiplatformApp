@@ -10,12 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.toArgb
 import com.boostyboys.mcs.designsystem.api.theme.McsTheme
-import com.boostyboys.mcs.di.initKoin
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initKoin()
 
         setContent {
             McsTheme {

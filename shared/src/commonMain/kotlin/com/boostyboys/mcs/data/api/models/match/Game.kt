@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.match
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -29,4 +30,4 @@ data class Game(
     val updatedAt: String,
     @SerialName("winning_team_id")
     val winningTeamId: String?,
-)
+) : JavaSerializable

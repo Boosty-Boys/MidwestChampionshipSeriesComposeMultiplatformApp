@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.player
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,4 +14,4 @@ data class Account(
     val platformId: String,
     @SerialName("screen_name")
     val screenName: String?,
-)
+) : JavaSerializable

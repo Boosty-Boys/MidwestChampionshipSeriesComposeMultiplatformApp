@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.season
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,4 +14,4 @@ data class Season(
     @SerialName("player_ids") val playerIds: List<String>,
     @SerialName("start_date") val startDate: String,
     @SerialName("end_date") val endDate: String,
-)
+) : JavaSerializable

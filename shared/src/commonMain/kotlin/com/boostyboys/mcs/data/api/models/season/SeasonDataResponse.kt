@@ -1,5 +1,6 @@
 package com.boostyboys.mcs.data.api.models.season
 
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import com.boostyboys.mcs.data.api.models.match.Match
 import com.boostyboys.mcs.data.api.models.team.TeamWithResults
 import kotlinx.serialization.SerialName
@@ -10,4 +11,4 @@ data class SeasonDataResponse(
     @SerialName("season_id") val seasonId: String,
     @SerialName("teams") val teams: List<TeamWithResults>,
     @SerialName("matches") val matches: List<Match>,
-)
+) : JavaSerializable
